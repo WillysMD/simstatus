@@ -1,0 +1,27 @@
+<mat-list>
+  <mat-list-item class="header">
+    <span class="name">Pak</span>
+    <span class="version">Version</span>
+    <span class="file">File</span>
+    <mat-divider></mat-divider>
+  </mat-list-item>
+  <mat-list-item *ngFor="let pak of paks; index as i;">
+    <span class="name">{{pak.name}}</span>
+    <span class="version">{{pak.version}}</span>
+    <span class="file"><a mat-button href="{{pak.file}}">Download</a></span>
+    <span class="fill"></span>
+    <span class="edit">
+      <button
+        (click)="deleteConfirmDialog(pak, 'Do you want to delete the following pak: ' + pak.name + '-' + pak.version)"
+        mat-icon-button aria-label="Delete pak" [disabled]="pak.protected">
+        <mat-icon>delete</mat-icon>
+      </button>
+    </span>
+    <mat-divider></mat-divider>
+  </mat-list-item>
+</mat-list>
+
+<button (click)="openCreateDialog()" mat-button class="add-button">
+  <mat-icon>add</mat-icon>
+  Pak
+</button>

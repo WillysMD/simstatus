@@ -1,0 +1,60 @@
+<mat-list>
+  <mat-list-item class="header">
+    <div class="switch"></div>
+    <div class="name">Instance</div>
+    <div class="port">Port</div>
+    <div class="revision">Revision</div>
+    <div class="lang">Language</div>
+    <div class="debug">Debug</div>
+    <div class="pak">Pak</div>
+    <div class="save">Save</div>
+    <div class="fill"></div>
+    <div class="actions"></div>
+    <mat-divider></mat-divider>
+  </mat-list-item>
+  <mat-list-item *ngFor="let instance of instances; index as i">
+    <div [ngSwitch]="instance.status" class="switch">
+      <button *ngSwitchCase="InstanceStatusCode.RUNNING" mat-icon-button aria-label="Stop">
+        <mat-icon>pause</mat-icon>
+      </button>
+      <button (click)="start(i)" *ngSwitchCase="InstanceStatusCode.READY" mat-icon-button aria-label="Start">
+        <mat-icon>play_arrow</mat-icon>
+      </button>
+      <span *ngSwitchCase="InstanceStatusCode.BUILDING">
+        <mat-spinner diameter="20" aria-label="Building"></mat-spinner>
+      </span>
+      <button (click)="install(i)" *ngSwitchCase="InstanceStatusCode.CREATED" mat-icon-button aria-label="Install instance">
+        <mat-icon>build</mat-icon>
+      </button>
+    </div>
+    <div class="name">{{instance.name}}</div>
+    <div class="port">{{instance.port}}</div>
+    <div class="revision">
+      <a mat-button routerLink="revisions" fragment="{{instance.revision.r}}">{{instance.revision.r}}</a>
+    </div>
+    <div class="lang">{{instance.lang}}</div>
+    <div class="debug">{{instance.debug}}</div>
+    <div class="pak">
+      <a mat-button href="{{instance.pak.file}}">{{instance.pak.name}}-{{instance.pak.version}}</a>
+    </div>
+    <div class="save">
+      <a mat-button href="{{instance.savegame.file}}">{{instance.savegame.name}}-{{instance.savegame.version}}</a>
+    </div>
+    <div class="fill"></div>
+    <div class="actions">
+      <button (click)="openEditDialog(i)" mat-icon-button aria-label="Edit configuration">
+        <mat-icon>settings</mat-icon>
+      </button>
+      <button (click)="deleteConfirmDialog(instance, 'Are you sure you want to delete this instance?')" mat-icon-button
+              aria-label="Delete instance">
+        <mat-icon>delete</mat-icon>
+      </button>
+    </div>
+    <mat-divider></mat-divider>
+  </mat-list-item>
+</mat-list>
+
+<button (click)="openCreateDialog()" mat-button class="add-button">
+  <mat-icon>add</mat-icon>
+  Instance
+</button>

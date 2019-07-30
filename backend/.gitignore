@@ -1,0 +1,8 @@
+# New project files
+
+/resources/builds/*
+!/resources/builds/config.default
+
+/resources/instances/*
+/resources/paks/*
+/resources/saves/*

@@ -1,0 +1,53 @@
+<mat-list>
+  <mat-list-item class="header">
+    <div class="name">Revision</div>
+    <div class="status">Status</div>
+    <div class="fill"></div>
+    <div class="actions"></div>
+  </mat-list-item>
+  <mat-divider></mat-divider>
+  <mat-list-item *ngFor="let revision of revisions">
+    <div class="name">
+      {{revision.r}} <span *ngIf="revision.alias">({{revision.alias}})</span>
+    </div>
+    <div class="status">
+      <span *ngIf="revision.status == RevisionStatusCode.READY">
+        <mat-icon>check</mat-icon>
+      </span>
+      <span *ngIf="revision.status == RevisionStatusCode.BUIDLING">
+        <mat-spinner diameter="20"></mat-spinner>
+      </span>
+      <span *ngIf="revision.status == RevisionStatusCode.INSTALL_ERROR">
+        <button mat-icon-button>
+          <mat-icon>autorenew</mat-icon>
+        </button>
+        Installation error
+      </span>
+      <span *ngIf="revision.status == RevisionStatusCode.COMPILE_ERROR">
+        <button mat-icon-button>
+          <mat-icon>autorenew</mat-icon>
+        </button>
+        Compilation error
+      </span>
+      <span *ngIf="revision.status == RevisionStatusCode.CLONE_ERROR">
+        <button mat-icon-button>
+          <mat-icon>autorenew</mat-icon>
+        </button>
+        Cloning error
+      </span>
+    </div>
+    <div class="fill"></div>
+    <div class="actions">
+      <button (click)="deleteConfirmDialog(revision, 'Do you want to delete the following revision: ' + revision.r)"
+              mat-icon-button aria-label="Delete pak" [disabled]="revision.protected">
+        <mat-icon>delete</mat-icon>
+      </button>
+    </div>
+    <mat-divider></mat-divider>
+  </mat-list-item>
+</mat-list>
+
+<button (click)="openCreateDialog()" mat-button class="add-button">
+  <mat-icon>add</mat-icon>
+  Revision
+</button>

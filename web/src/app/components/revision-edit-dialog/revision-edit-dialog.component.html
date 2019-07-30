@@ -1,0 +1,16 @@
+<h2 mat-dialog-title>Revision options</h2>
+<mat-dialog-content>
+  <form [formGroup]="revisionForm">
+    <mat-form-field>
+      <input matInput formControlName="r" type="number" placeholder="Revision">
+    </mat-form-field>
+    <br>
+    <mat-form-field>
+      <input matInput formControlName="alias" type="text" placeholder="Stable version (optional)">
+    </mat-form-field>
+  </form>
+</mat-dialog-content>
+<mat-dialog-actions>
+  <button (click)="save()" [disabled]="!this.revisionForm.valid" mat-button color="primary">Build</button>
+  <button (click)="closeConfirm('Are you sure want to discard your changes?')" mat-button>Cancel</button>
+</mat-dialog-actions>
