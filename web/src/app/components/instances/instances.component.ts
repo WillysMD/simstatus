@@ -126,7 +126,9 @@ export class InstancesComponent implements OnInit {
    * Open the instance edit dialog with empty instance data
    */
   openCreateDialog() {
-    const dialogRef = this._editDialog.open(InstanceEditDialogComponent, {data: {} as Instance});
+    const dialogRef = this._editDialog.open(InstanceEditDialogComponent, {
+      data: {instance: {} as Instance, list: this.instances}
+    });
     dialogRef.afterClosed().subscribe(data => {
       if (data != null) {
         // Set spinner mode while the server is installing
@@ -136,7 +138,10 @@ export class InstancesComponent implements OnInit {
         // Send the new instance data to the server
         this._apiService.instancePost(data).subscribe({
           error: err => this._errorSnack.open(err.message, ERROR_SNACK_ACTION, ERROR_SNACK_CONFIG),
-          next: (response) => this.instances[i] = response
+          next: (response) => {
+            this.instances[i] = response;
+            this.getRelatedInfos(this.instances[i]);
+          }
         });
       }
     });
@@ -147,7 +152,9 @@ export class InstancesComponent implements OnInit {
    * @param i - instance array id to update
    */
   openEditDialog(i: number) {
-    const dialogRef = this._editDialog.open(InstanceEditDialogComponent, {data: this.instances[i]});
+    const dialogRef = this._editDialog.open(InstanceEditDialogComponent, {
+      data: {instance: this.instances[i], list: this.instances}
+    });
     dialogRef.afterClosed().subscribe(data => {
       if (data != null) {
         // Switch to spinner mode while the server is installing
@@ -159,7 +166,10 @@ export class InstancesComponent implements OnInit {
         // Send the changes to the server
         this._apiService.instancePut(data).subscribe({
           error: err => this._errorSnack.open(err.message, ERROR_SNACK_ACTION, ERROR_SNACK_CONFIG),
-          next: (response) => this.instances[i] = response
+          next: (response) => {
+            this.instances[i] = response;
+            this.getRelatedInfos(this.instances[i]);
+          }
         });
       }
     });

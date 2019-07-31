@@ -1,5 +1,5 @@
-<h2 mat-dialog-title *ngIf="instance.name == undefined">Create new instance</h2>
-<h2 mat-dialog-title *ngIf="instance.name != undefined">Edit insatnce configuration</h2>
+<h2 mat-dialog-title *ngIf="data.instance.name == undefined">Create new instance</h2>
+<h2 mat-dialog-title *ngIf="data.instance.name != undefined">Edit insatnce configuration</h2>
 <mat-dialog-content>
   <form [formGroup]="instanceForm">
     <mat-form-field>
@@ -30,6 +30,7 @@
     <mat-form-field>
       <mat-label>Debug level</mat-label>
       <mat-select formControlName="debug">
+        <mat-option [value]="0">0</mat-option>
         <mat-option [value]="1">1</mat-option>
         <mat-option [value]="2">2</mat-option>
         <mat-option [value]="3">3</mat-option>

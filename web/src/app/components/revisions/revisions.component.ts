@@ -74,7 +74,11 @@ export class RevisionsComponent implements OnInit {
         const i = this.insert(data as Revision);
 
         this._apiService.revisionsPost(data).subscribe({
-          error: err => this._errorSnack.open(err.message, ERROR_SNACK_ACTION, ERROR_SNACK_CONFIG),
+          error: err => {
+            this._errorSnack.open(err.message, ERROR_SNACK_ACTION, ERROR_SNACK_CONFIG);
+            // Reload list to get status code
+            this.list();
+          },
           next: (response) => this.revisions[i] = response,
         });
       }
