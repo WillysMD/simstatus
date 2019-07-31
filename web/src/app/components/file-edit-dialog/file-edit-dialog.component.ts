@@ -4,7 +4,7 @@ import {FormControl, FormGroup, Validators} from '@angular/forms';
 import {FileInfo} from '../../api.service';
 import {ConfirmDialogComponent} from '../confirm-dialog/confirm-dialog.component';
 
-export interface FileData {
+interface FileDialogData {
   file: FileInfo;
   list: FileInfo[];
 }
@@ -30,7 +30,7 @@ export class FileEditDialogComponent {
   private file: File;
 
   constructor(public dialogRef: MatDialogRef<FileEditDialogComponent>,
-              @Inject(MAT_DIALOG_DATA) public data: FileData,
+              @Inject(MAT_DIALOG_DATA) public data: FileDialogData,
               private confirmDialog: MatDialog) {
     this.fileForm.valueChanges.subscribe(() => {
       this.edited = true;
@@ -46,7 +46,7 @@ export class FileEditDialogComponent {
    * Check if form is valid and a file was added
    */
   isValid() {
-    return this.file != undefined && this.fileForm.valid;
+    return this.file != null && this.fileForm.valid;
   }
 
   /**
@@ -55,7 +55,7 @@ export class FileEditDialogComponent {
   closeConfirm(prompt: string) {
     if (this.edited) {
       // If the content has been edited, open a confirm dialog before closing
-      let confirmDialogRef = this.confirmDialog.open(ConfirmDialogComponent, {data: prompt});
+      const confirmDialogRef = this.confirmDialog.open(ConfirmDialogComponent, {data: prompt});
       confirmDialogRef.afterClosed().subscribe((answer) => {
         if (answer) {
           this.dialogRef.close();
@@ -71,7 +71,7 @@ export class FileEditDialogComponent {
    * Add the file and text fields to a FormData object and close
    */
   save() {
-    let fileData = new FormData();
+    const fileData = new FormData();
     fileData.append('name', this.fileForm.value.name);
     fileData.append('version', this.fileForm.value.version);
     fileData.append('file', this.file);

@@ -24,8 +24,8 @@ class RevisionViewSet(viewsets.ModelViewSet):
 
 
 class RevisionLatestView(APIView):
-    def get(self):
-        return Response(data={'latest_revision': get_latest_revision()})
+    def get(self, request):
+        return Response(data=get_latest_revision())
 
 
 class InstanceViewSet(viewsets.ModelViewSet):
@@ -67,5 +67,5 @@ def get_latest_revision():
     # svn info | grep Revision | cut -c11-
     svn = Popen(['svn', 'info', REPOSITORY_URL], stdout=PIPE)
     grep = Popen(['grep', 'Revision'], stdin=svn.stdout, stdout=PIPE)
-    cut = run(['cut', '-c11-'], stdin=grep.stdout, stdout=PIPE)
-    return cut.stdout.decode('utf-8')
+    cut = run(['cut', '-c11-'], stdin=grep.stdout, stdout=PIPE, encoding='utf-8')
+    return cut.stdout.strip()

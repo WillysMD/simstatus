@@ -40,8 +40,8 @@ export class PaksComponent implements OnInit {
   }
 
   openCreateDialog() {
-    let createDialogRef = this._editDialog.open(FileEditDialogComponent, {
-      data: {file: <FileInfo>{}, list: this.paks}
+    const createDialogRef = this._editDialog.open(FileEditDialogComponent, {
+      data: {file: {} as FileInfo, list: this.paks}
     });
     createDialogRef.afterClosed().subscribe(data => {
       if (data) {
@@ -54,13 +54,13 @@ export class PaksComponent implements OnInit {
     });
   }
 
-  deleteConfirmDialog(pak: FileInfo, prompt: string) {
-    let confirmDialogRef = this._confirmDialog.open(ConfirmDialogComponent, {data: prompt});
+  deleteConfirmDialog(i: number, prompt: string) {
+    const confirmDialogRef = this._confirmDialog.open(ConfirmDialogComponent, {data: prompt});
     confirmDialogRef.afterClosed().subscribe((answer) => {
       if (answer) {
-        this._apiService.pakDelete(pak).subscribe({
+        this._apiService.pakDelete(this.paks[i]).subscribe({
           error: err => this._errorSnack.open(err.message, ERROR_SNACK_ACTION, ERROR_SNACK_CONFIG),
-          complete: () => this.paks.splice(this.paks.indexOf(pak), 1)
+          complete: () => this.paks.splice(i, 1)
         });
       }
     });

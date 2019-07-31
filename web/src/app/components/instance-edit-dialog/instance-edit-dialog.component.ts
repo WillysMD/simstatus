@@ -2,7 +2,7 @@ import {Component, Inject} from '@angular/core';
 import {MAT_DIALOG_DATA, MatDialog, MatDialogRef, MatSnackBar} from '@angular/material';
 import {Instance, ApiService, FileInfo, Revision} from '../../api.service';
 import {ConfirmDialogComponent} from '../confirm-dialog/confirm-dialog.component';
-import {FormControl, FormGroup, Validators} from '@angular/forms';
+import {AbstractControl, FormControl, FormGroup, ValidatorFn, Validators} from '@angular/forms';
 import {FileEditDialogComponent} from '../file-edit-dialog/file-edit-dialog.component';
 import {RevisionEditDialogComponent} from '../revision-edit-dialog/revision-edit-dialog.component';
 
@@ -10,6 +10,11 @@ const ERROR_SNACK_ACTION = 'OK';
 const ERROR_SNACK_CONFIG = {
   duration: 5000
 };
+
+interface InstanceDialogData {
+  instance: Instance;
+  list: Instance[];
+}
 
 @Component({
   selector: 'app-instance-edit-dialog',
@@ -20,24 +25,25 @@ export class InstanceEditDialogComponent {
 
   private edited = false;
   private instanceForm = new FormGroup({
-    name: new FormControl(this.instance.name, [
+    name: new FormControl(this.data.instance.name, [
       Validators.required,
       Validators.pattern('[a-zA-Z0-9\-_]+')
     ]),
-    port: new FormControl(this.instance.port, [
+    port: new FormControl(this.data.instance.port || 13353, [
       Validators.required,
-      Validators.pattern('[0-9]+')
+      Validators.pattern('[0-9]+'),
+      portIsUnique(this.data.list)
     ]),
     revision: new FormControl(null, [
       Validators.required,
     ]),
-    lang: new FormControl(this.instance.lang || 'en', [
+    lang: new FormControl(this.data.instance.lang || 'en', [
       Validators.required,
       Validators.pattern('[a-z]{2}')
     ]),
-    debug: new FormControl(this.instance.debug || 2, [
+    debug: new FormControl(this.data.instance.debug || 2, [
       Validators.required,
-      Validators.min(1),
+      Validators.min(0),
       Validators.max(3)
     ]),
     pak: new FormControl(null, [
@@ -46,7 +52,7 @@ export class InstanceEditDialogComponent {
     savegame: new FormControl(null, [
       Validators.required
     ]),
-    url: new FormControl(this.instance.url)
+    url: new FormControl(this.data.instance.url)
   });
 
   revisions: Revision[];
@@ -54,28 +60,28 @@ export class InstanceEditDialogComponent {
   saves: FileInfo[];
 
   constructor(public dialogRef: MatDialogRef<InstanceEditDialogComponent>,
-              @Inject(MAT_DIALOG_DATA) public instance: Instance,
+              @Inject(MAT_DIALOG_DATA) public data: InstanceDialogData,
               private _apiService: ApiService,
               private _confirmDialog: MatDialog,
               private _createRevisionDialog: MatDialog,
               private _createPakDialog: MatDialog,
               private _createSaveDialog: MatDialog,
               private _errorSnack: MatSnackBar) {
-    if (this.instance.revision != null) {
+    if (this.data.instance.revision != null) {
       this.instanceForm.patchValue({
-        revision: (this.instance.revision as Revision).url
+        revision: (this.data.instance.revision as Revision).url
       });
     }
 
-    if (this.instance.pak != null) {
+    if (this.data.instance.pak != null) {
       this.instanceForm.patchValue({
-        pak: (this.instance.pak as FileInfo).url
+        pak: (this.data.instance.pak as FileInfo).url
       });
     }
 
-    if (this.instance.savegame != null) {
+    if (this.data.instance.savegame != null) {
       this.instanceForm.patchValue({
-        savegame: (this.instance.savegame as FileInfo).url
+        savegame: (this.data.instance.savegame as FileInfo).url
       });
     }
 
@@ -107,7 +113,7 @@ export class InstanceEditDialogComponent {
   closeConfirm(prompt: string) {
     if (this.edited) {
       // If the content has been edited, open a confirm dialog before closing
-      let confirmDialogRef = this._confirmDialog.open(ConfirmDialogComponent, {
+      const confirmDialogRef = this._confirmDialog.open(ConfirmDialogComponent, {
         data: prompt,
       });
       confirmDialogRef.afterClosed().subscribe((answer) => {
@@ -122,8 +128,8 @@ export class InstanceEditDialogComponent {
   }
 
   createRevisionDialog() {
-    let createRevisionDialog = this._createRevisionDialog.open(RevisionEditDialogComponent, {
-      data: {revision: <Revision>{}, list: this.revisions}
+    const createRevisionDialog = this._createRevisionDialog.open(RevisionEditDialogComponent, {
+      data: {revision: {} as Revision, list: this.revisions}
     });
     createRevisionDialog.afterClosed().subscribe(data => {
       if (data != null) {
@@ -136,8 +142,8 @@ export class InstanceEditDialogComponent {
   }
 
   createPakDialog() {
-    let createPakDialogRef = this._createPakDialog.open(FileEditDialogComponent, {
-      data: {file: <FileInfo>{}, list: this.paks}
+    const createPakDialogRef = this._createPakDialog.open(FileEditDialogComponent, {
+      data: {file: {} as FileInfo, list: this.paks}
     });
     createPakDialogRef.afterClosed().subscribe(data => {
       if (data != null) {
@@ -150,8 +156,8 @@ export class InstanceEditDialogComponent {
   }
 
   createSaveDialog() {
-    let createSaveDialogRef = this._createSaveDialog.open(FileEditDialogComponent, {
-      data: {file: <FileInfo>{}, list: this.saves},
+    const createSaveDialogRef = this._createSaveDialog.open(FileEditDialogComponent, {
+      data: {file: {} as FileInfo, list: this.saves},
     });
     createSaveDialogRef.afterClosed().subscribe(data => {
       if (data != null) {
@@ -166,4 +172,15 @@ export class InstanceEditDialogComponent {
   save() {
     this.dialogRef.close(this.instanceForm.value);
   }
+}
+
+function portIsUnique(instances: Instance[]): ValidatorFn {
+  return (control: AbstractControl): { [key: string]: any } => {
+    for (const instance of instances) {
+      if (instance.port === control.value) {
+        return {portNotUnique: {value: control.value}};
+      }
+    }
+    return null;
+  };
 }

@@ -11,6 +11,7 @@ class ExternalFile(models.Model):
 
     class Meta:
         abstract = True
+        unique_together = ('name', 'version')
 
 
 def pak_file_path(pak, filename):
@@ -41,7 +42,8 @@ class Instance(models.Model):
     # Instance configuration
     port = models.IntegerField(unique=True, default=13353)
     lang = models.TextField(max_length=2, default='en')
-    debug = models.IntegerField(default=2, validators=[MinValueValidator(1), MaxValueValidator(3)])
+    debug = models.IntegerField(default=2, validators=[MinValueValidator(0), MaxValueValidator(3)])
+    # TODO: client handle null values and block install
     revision = models.ForeignKey(Revision, on_delete=models.PROTECT, null=True)
     pak = models.ForeignKey(Pak, on_delete=models.PROTECT, null=True)
     savegame = models.ForeignKey(Save, on_delete=models.PROTECT, null=True)

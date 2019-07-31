@@ -16,6 +16,7 @@ export class ApiService {
   private revisionsUrl = 'http://127.0.0.1:8000/revisions/';
   private paksUrl = 'http://127.0.0.1:8000/paks/';
   private savesUrl = 'http://127.0.0.1:8000/saves/';
+  private revisionLatestUrl = 'http://127.0.0.1:8000/revision/latest/';
 
   constructor(private httpClient: HttpClient) {
   }
@@ -60,6 +61,10 @@ export class ApiService {
     return this.httpClient.get<Revision>(url, httpDefaultOptions);
   }
 
+  revisionGetLatest() {
+    return this.httpClient.get<number>(this.revisionLatestUrl);
+  }
+
   paksList() {
     return this.httpClient.get<FileInfo[]>(this.paksUrl, httpDefaultOptions);
   }
@@ -91,21 +96,27 @@ export class ApiService {
   }
 
   addRevisionInfo(instance) {
-    this.revisionGet(<string>instance.revision).subscribe(revision => {
-      instance.revision = revision;
-    });
+    if (typeof instance.revision === 'string') {
+      this.revisionGet(instance.revision).subscribe(revision => {
+        instance.revision = revision;
+      });
+    }
   }
 
   addPakInfo(instance) {
-    this.fileInfoGet(<string>instance.pak).subscribe(pak => {
-      instance.pak = pak;
-    });
+    if (typeof instance.pak === 'string') {
+      this.fileInfoGet(instance.pak).subscribe(pak => {
+        instance.pak = pak;
+      });
+    }
   }
 
   addSaveInfo(instance) {
-    this.fileInfoGet(<string>instance.savegame).subscribe(savegame => {
-      instance.savegame = savegame;
-    });
+    if (typeof instance.savegame === 'string') {
+      this.fileInfoGet(instance.savegame).subscribe(savegame => {
+        instance.savegame = savegame;
+      });
+    }
   }
 }
 

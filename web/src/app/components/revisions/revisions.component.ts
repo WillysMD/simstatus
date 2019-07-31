@@ -25,6 +25,9 @@ export class RevisionsComponent implements OnInit {
               private _errorSnack: MatSnackBar) {
   }
 
+  /**
+   * Update the list of revisions
+   */
   private list() {
     this._apiService.revisionsList().subscribe({
       error: err => this._errorSnack.open(errorMessage(err), ERROR_SNACK_ACTION, ERROR_SNACK_CONFIG),
@@ -37,7 +40,7 @@ export class RevisionsComponent implements OnInit {
    * Sort the revisions list
    * @param by - Property of Revision to sort by
    */
-  sort(by: string = 'r') {
+  private sort(by: string = 'r') {
     this.revisions.sort((a, b) => {
       if (a[by] < b[by]) {
         return -1;
@@ -49,42 +52,55 @@ export class RevisionsComponent implements OnInit {
     });
   }
 
-  insert(revision: Revision): number {
+  /**
+   * Insert a revision and keep the array sorted
+   * @param revision to insert
+   * @return the index at which the revision was inserted
+   */
+  private insert(revision: Revision): number {
     this.revisions.push(revision);
     this.sort();
     return this.revisions.indexOf(revision);
   }
 
   openCreateDialog() {
-    let createDialogRef = this._revisionDialog.open(RevisionEditDialogComponent, {
-      data: {revision: <Revision>{}, list: this.revisions}
+    const createDialogRef = this._revisionDialog.open(RevisionEditDialogComponent, {
+      data: {revision: {} as Revision, list: this.revisions}
     });
     createDialogRef.afterClosed().subscribe(data => {
-      if(data) {
+      if (data) {
+        // Switch to spinner mode while the revision is compiling
         data.status = RevisionStatusCode.BUIDLING;
-        let i = this.insert(<Revision>data);
+        const i = this.insert(data as Revision);
 
         this._apiService.revisionsPost(data).subscribe({
-          error: err => this._errorSnack.open(errorMessage(err), ERROR_SNACK_ACTION, ERROR_SNACK_CONFIG),
-          next: (revision) => this.revisions[i] = revision,
+          error: err => this._errorSnack.open(err.message, ERROR_SNACK_ACTION, ERROR_SNACK_CONFIG),
+          next: (response) => this.revisions[i] = response,
         });
       }
     });
   }
 
-  deleteConfirmDialog(revision: Revision, prompt: string) {
-    let confirmDialogRef = this._confirmDialog.open(ConfirmDialogComponent, {data: prompt});
+  deleteConfirmDialog(i: number, prompt: string) {
+    const confirmDialogRef = this._confirmDialog.open(ConfirmDialogComponent, {data: prompt});
     confirmDialogRef.afterClosed().subscribe((answer) => {
       if (answer) {
-        this._apiService.revisionsDelete(revision).subscribe({
-          error: err => this._errorSnack.open(errorMessage(err), ERROR_SNACK_ACTION, ERROR_SNACK_CONFIG),
-          complete: () => this.revisions.splice(this.revisions.indexOf(revision), 1)
+        // Switch to spinner mode while the revision is being deleted
+        this.revisions[i].status = RevisionStatusCode.BUIDLING;
+        this._apiService.revisionsDelete(this.revisions[i]).subscribe({
+          error: err => this._errorSnack.open(err.message, ERROR_SNACK_ACTION, ERROR_SNACK_CONFIG),
+          complete: () => this.revisions.splice(i, 1)
         });
       }
     });
   }
 
   ngOnInit() {
+    // Initialize the list
     this.list();
+    // Auto refresh the list
+    setInterval(() => {
+      this.list();
+    }, 10000);
   }
 }

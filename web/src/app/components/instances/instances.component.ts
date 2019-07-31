@@ -35,10 +35,8 @@ export class InstancesComponent implements OnInit {
       },
       next: instances => {
         // Get the pak and save infos for each instance
-        for (let instance of instances) {
-          this._apiService.addRevisionInfo(instance);
-          this._apiService.addPakInfo(instance);
-          this._apiService.addSaveInfo(instance);
+        for (const instance of instances) {
+          this.getRelatedInfos(instance);
         }
         this.instances = instances;
       },
@@ -47,12 +45,22 @@ export class InstancesComponent implements OnInit {
   }
 
   /**
+   * Add revision, pak and save info to an instance
+   * @param instance to udpate
+   */
+  private getRelatedInfos(instance) {
+    this._apiService.addRevisionInfo(instance);
+    this._apiService.addPakInfo(instance);
+    this._apiService.addSaveInfo(instance);
+  }
+
+  /**
    * Sort the instance list
    * @param by - Property of Instance to sort by
    */
-  sort(by: string = 'name') {
+  private sort(by: string = 'name') {
     this.instances.sort((a, b) => {
-      if (a[by] < b[by]) {
+      if (a[by] > b[by]) {
         return -1;
       } else if (a[by] > b[by]) {
         return 1;
@@ -62,7 +70,12 @@ export class InstancesComponent implements OnInit {
     });
   }
 
-  insert(instance: Instance): number {
+  /**
+   * Insert a instance and keep the array sorted
+   * @param instance to insert
+   * @return the index at which the instance was inserted
+   */
+  private insert(instance: Instance): number {
     this.instances.push(instance);
     this.sort();
     return this.instances.indexOf(instance);
@@ -113,19 +126,17 @@ export class InstancesComponent implements OnInit {
    * Open the instance edit dialog with empty instance data
    */
   openCreateDialog() {
-    let dialogRef = this._editDialog.open(InstanceEditDialogComponent, {data: <Instance>{}});
+    const dialogRef = this._editDialog.open(InstanceEditDialogComponent, {data: {} as Instance});
     dialogRef.afterClosed().subscribe(data => {
       if (data != null) {
-        let instance = <Instance>data;
         // Set spinner mode while the server is installing
-        instance.status = InstanceStatusCode.BUILDING;
-        // Add the instance to the list and sort
-        let i = this.insert(instance);
+        data.status = InstanceStatusCode.BUILDING;
+        const i = this.insert(data as Instance);
 
         // Send the new instance data to the server
         this._apiService.instancePost(data).subscribe({
           error: err => this._errorSnack.open(err.message, ERROR_SNACK_ACTION, ERROR_SNACK_CONFIG),
-          next: (instance) => this.instances[i] = instance
+          next: (response) => this.instances[i] = response
         });
       }
     });
@@ -136,18 +147,19 @@ export class InstancesComponent implements OnInit {
    * @param i - instance array id to update
    */
   openEditDialog(i: number) {
-    let dialogRef = this._editDialog.open(InstanceEditDialogComponent, {data: this.instances[i]});
+    const dialogRef = this._editDialog.open(InstanceEditDialogComponent, {data: this.instances[i]});
     dialogRef.afterClosed().subscribe(data => {
       if (data != null) {
-        let instance = <Instance>data;
         // Switch to spinner mode while the server is installing
-        instance.status = InstanceStatusCode.BUILDING;
-        this.instances[i] = instance;
+        data.status = InstanceStatusCode.BUILDING;
+        // Replace with edited instance and get revision, pak and save infos
+        this.instances[i] = data as Instance;
+        this.getRelatedInfos(this.instances[i]);
 
         // Send the changes to the server
         this._apiService.instancePut(data).subscribe({
           error: err => this._errorSnack.open(err.message, ERROR_SNACK_ACTION, ERROR_SNACK_CONFIG),
-          next: (instance) => this.instances[i] = instance
+          next: (response) => this.instances[i] = response
         });
       }
     });
@@ -159,7 +171,7 @@ export class InstancesComponent implements OnInit {
    * @param promt - delete confirm dialog text
    */
   deleteConfirmDialog(instance: Instance, promt: string) {
-    let confirmDialogRef = this._confirmDialog.open(ConfirmDialogComponent, {data: promt});
+    const confirmDialogRef = this._confirmDialog.open(ConfirmDialogComponent, {data: promt});
     confirmDialogRef.afterClosed().subscribe((answer) => {
       if (answer) {
         // Switch to spinner mode while waiting for the server
@@ -177,5 +189,9 @@ export class InstancesComponent implements OnInit {
   ngOnInit() {
     // Initialize the list
     this.list();
+    // Auto refresh the list
+    setInterval(() => {
+      this.list();
+    }, 10000);
   }
 }

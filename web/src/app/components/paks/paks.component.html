@@ -12,7 +12,7 @@
     <span class="fill"></span>
     <span class="edit">
       <button
-        (click)="deleteConfirmDialog(pak, 'Do you want to delete the following pak: ' + pak.name + '-' + pak.version)"
+        (click)="deleteConfirmDialog(i, 'Do you want to delete the following pak: ' + pak.name + '-' + pak.version)"
         mat-icon-button aria-label="Delete pak" [disabled]="pak.protected">
         <mat-icon>delete</mat-icon>
       </button>

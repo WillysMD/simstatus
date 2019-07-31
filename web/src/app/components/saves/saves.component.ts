@@ -40,8 +40,8 @@ export class SavesComponent implements OnInit {
   }
 
   openCreateDialog() {
-    let createDialogRef = this._fileDialog.open(FileEditDialogComponent, {
-      data: {file: <FileInfo>{}, list: this.saves}
+    const createDialogRef = this._fileDialog.open(FileEditDialogComponent, {
+      data: {file: {} as FileInfo, list: this.saves}
     });
     createDialogRef.afterClosed().subscribe(data => {
       if (data) {
@@ -54,13 +54,13 @@ export class SavesComponent implements OnInit {
     });
   }
 
-  deleteConfirmDialog(save: FileInfo, prompt: string) {
-    let confirmDialog = this._confirmDialog.open(ConfirmDialogComponent, {data: prompt});
+  deleteConfirmDialog(i: number, prompt: string) {
+    const confirmDialog = this._confirmDialog.open(ConfirmDialogComponent, {data: prompt});
     confirmDialog.afterClosed().subscribe((answer) => {
       if (answer) {
-        this._apiService.saveDelete(save).subscribe({
+        this._apiService.saveDelete(this.saves[i]).subscribe({
           error: err => this._errorSnack.open(err.message, ERROR_SNACK_ACTION, ERROR_SNACK_CONFIG),
-          complete: () => this.saves.splice(this.saves.indexOf(save), 1)
+          complete: () => this.saves.splice(i, 1)
         });
       }
     });

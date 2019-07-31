@@ -5,6 +5,8 @@
       <input matInput formControlName="r" type="number" placeholder="Revision">
     </mat-form-field>
     <br>
+    <span *ngIf="latestRevision">Latest revision is {{latestRevision}}</span>
+    <br>
     <mat-form-field>
       <input matInput formControlName="alias" type="text" placeholder="Stable version (optional)">
     </mat-form-field>

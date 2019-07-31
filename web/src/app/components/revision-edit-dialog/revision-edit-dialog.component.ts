@@ -1,7 +1,7 @@
-import {Component, Inject} from '@angular/core';
+import {Component, Inject, OnInit} from '@angular/core';
 import {MAT_DIALOG_DATA, MatDialog, MatDialogRef} from '@angular/material';
 import {AbstractControl, FormControl, FormGroup, ValidatorFn, Validators} from '@angular/forms';
-import {Revision} from '../../api.service';
+import {ApiService, Revision} from '../../api.service';
 import {ConfirmDialogComponent} from '../confirm-dialog/confirm-dialog.component';
 
 export interface RevisionData {
@@ -14,9 +14,10 @@ export interface RevisionData {
   templateUrl: './revision-edit-dialog.component.html',
   styleUrls: ['./revision-edit-dialog.component.sass']
 })
-export class RevisionEditDialogComponent {
+export class RevisionEditDialogComponent implements OnInit {
 
   private edited = false;
+  private latestRevision: number;
   private revisionForm = new FormGroup({
     r: new FormControl(this.data.revision.r, [
       Validators.required,
@@ -30,7 +31,8 @@ export class RevisionEditDialogComponent {
 
   constructor(public dialogRef: MatDialogRef<RevisionEditDialogComponent>,
               @Inject(MAT_DIALOG_DATA) public data: RevisionData,
-              private confirmDialog: MatDialog) {
+              private confirmDialog: MatDialog,
+              private _apiService: ApiService) {
     this.revisionForm.valueChanges.subscribe(() => {
       this.edited = true;
       this.dialogRef.disableClose = true;
@@ -43,7 +45,7 @@ export class RevisionEditDialogComponent {
   closeConfirm(prompt: string) {
     if (this.edited) {
       // If the content has been edited, open a confirm dialog before closing
-      let confirmDialogRef = this.confirmDialog.open(ConfirmDialogComponent, {data: prompt});
+      const confirmDialogRef = this.confirmDialog.open(ConfirmDialogComponent, {data: prompt});
       confirmDialogRef.afterClosed().subscribe((answer) => {
         if (answer) {
           this.dialogRef.close();
@@ -58,16 +60,23 @@ export class RevisionEditDialogComponent {
   save() {
     this.dialogRef.close(this.revisionForm.value);
   }
-}
 
-export function revisionIsUnique(revisions: Revision[]): ValidatorFn {
-  return (control: AbstractControl): { [key: string]: any } => {
-    for (let revision of revisions) {
-      if (revision.r == control.value) {
-        return {'revisionNotUnique': {value: control.value}};
-      } else {
-        return null;
-      }
+  ngOnInit() {
+    if (this.latestRevision === undefined) {
+      this._apiService.revisionGetLatest().subscribe({
+        next: latestRevision => this.latestRevision = latestRevision
+      });
     }
   }
+}
+
+function revisionIsUnique(revisions: Revision[]): ValidatorFn {
+  return (control: AbstractControl): { [key: string]: any } => {
+    for (const revision of revisions) {
+      if (revision.r === control.value) {
+        return {revisionNotUnique: {value: control.value}};
+      }
+    }
+    return null;
+  };
 }

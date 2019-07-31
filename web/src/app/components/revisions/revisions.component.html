@@ -6,7 +6,7 @@
     <div class="actions"></div>
   </mat-list-item>
   <mat-divider></mat-divider>
-  <mat-list-item *ngFor="let revision of revisions">
+  <mat-list-item *ngFor="let revision of revisions; index as i">
     <div class="name">
       {{revision.r}} <span *ngIf="revision.alias">({{revision.alias}})</span>
     </div>
@@ -38,7 +38,7 @@
     </div>
     <div class="fill"></div>
     <div class="actions">
-      <button (click)="deleteConfirmDialog(revision, 'Do you want to delete the following revision: ' + revision.r)"
+      <button (click)="deleteConfirmDialog(i, 'Do you want to delete the following revision: ' + revision.r)"
               mat-icon-button aria-label="Delete pak" [disabled]="revision.protected">
         <mat-icon>delete</mat-icon>
       </button>
