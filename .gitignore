@@ -1,14 +1,3 @@
-# Old Project files
-/build/*
-!/build/build.sh
-!/build/config.default
-
-/instances/*
-!/instances/example
-
-/log/*
-/run/*
-
 # General files
 
 # System

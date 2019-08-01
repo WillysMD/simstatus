@@ -12,11 +12,11 @@ const httpDefaultOptions = {
 })
 export class ApiService {
 
-  private instancesUrl = 'http://127.0.0.1:8000/instances/';
-  private revisionsUrl = 'http://127.0.0.1:8000/revisions/';
-  private paksUrl = 'http://127.0.0.1:8000/paks/';
-  private savesUrl = 'http://127.0.0.1:8000/saves/';
-  private revisionLatestUrl = 'http://127.0.0.1:8000/revision/latest/';
+  private instancesUrl = 'http://localhost:8000/api/instances/';
+  private revisionsUrl = 'http://localhost:8000/api/revisions/';
+  private paksUrl = 'http://localhost:8000/api/paks/';
+  private savesUrl = 'http://localhost:8000/api/saves/';
+  private revisionLatestUrl = 'http://localhost:8000/api/revision/latest/';
 
   constructor(private httpClient: HttpClient) {
   }

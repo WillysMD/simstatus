@@ -35,16 +35,12 @@ INSTALLED_APPS = [
     'instances',
     'rest_framework',
     'corsheaders',
-    'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
 ]
-
-if DEBUG:
-    INSTALLED_APPS.append('django_extensions')
 
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
@@ -127,23 +123,7 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
-MEDIA_ROOT = 'resources'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'resources/uploads/')
+MEDIA_URL = '/uploads/'
 
 CORS_ORIGIN_ALLOW_ALL = True
-
-# LOGGING = {
-#     'version': 1,
-#     'disable_existing_loggers': False,
-#     'handlers': {
-#         'build': {
-#             'level': 'INFO',
-#             'class': 'logging.FileHandler',
-#             'filename': os.path.join(BASE_DIR, 'logs', 'build.log')
-#         },
-#         'instance': {
-#             'level': 'INFO',
-#             'class': 'logging.FileHandler',
-#             'filename': os.path.join(BASE_DIR, 'logs', 'instance.log')
-#         }
-#     }
-# }

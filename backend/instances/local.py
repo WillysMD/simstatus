@@ -6,7 +6,7 @@ import multiprocessing
 from subprocess import Popen, STDOUT
 from django.conf import settings
 
-RESOURCES_DIR = os.path.join(settings.BASE_DIR, settings.MEDIA_ROOT)
+RESOURCES_DIR = os.path.join(settings.BASE_DIR, 'resources')
 BUILD_DIR = os.path.join(RESOURCES_DIR, 'builds')
 BUILD_CONFIG = os.path.join(RESOURCES_DIR, 'builds', 'config.default')
 REPOSITORY_URL = 'svn://servers.simutrans.org/simutrans/trunk'
@@ -142,7 +142,6 @@ class LocalInstance:
 
     @property
     def pid(self):
-        print(self._pid)
         try:
             process = psutil.Process(self._pid)
         except psutil.NoSuchProcess:
