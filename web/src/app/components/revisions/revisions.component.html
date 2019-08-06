@@ -18,19 +18,19 @@
         <mat-spinner diameter="20"></mat-spinner>
       </span>
       <span *ngIf="revision.status == RevisionStatusCode.INSTALL_ERROR">
-        <button mat-icon-button>
+        <button (click)="build(i)" mat-icon-button>
           <mat-icon>autorenew</mat-icon>
         </button>
         Installation error
       </span>
       <span *ngIf="revision.status == RevisionStatusCode.COMPILE_ERROR">
-        <button mat-icon-button>
+        <button (click)="build(i)" mat-icon-button>
           <mat-icon>autorenew</mat-icon>
         </button>
         Compilation error
       </span>
       <span *ngIf="revision.status == RevisionStatusCode.CLONE_ERROR">
-        <button mat-icon-button>
+        <button (click)="build(i)" mat-icon-button>
           <mat-icon>autorenew</mat-icon>
         </button>
         Cloning error

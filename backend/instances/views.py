@@ -5,7 +5,7 @@ from rest_framework.generics import RetrieveAPIView
 from rest_framework.response import Response
 from .serializers import PakSerializer, SaveSerializer, RevisionSerializer, InstanceSerializer
 from .models import Pak, Save, Revision, Instance
-from .local import REPOSITORY_URL, LocalInstance
+from .local import REPOSITORY_URL, LocalRevision, LocalInstance
 
 
 class PakViewSet(viewsets.ModelViewSet):
@@ -23,9 +23,20 @@ class RevisionViewSet(viewsets.ModelViewSet):
     queryset = Revision.objects.all()
 
 
-class RevisionLatestView(APIView):
-    def get(self, request):
-        return Response(data=get_latest_revision())
+class RevisionActionView(RetrieveAPIView):
+    serializer_class = RevisionSerializer
+    queryset = Revision.objects.all()
+
+    def get_local_revision(self):
+        return LocalRevision(self.get_object())
+
+
+class RevisionBuildView(RevisionActionView):
+    def get(self, request, *args, **kwargs):
+        local_revision = self.get_local_revision()
+        local_revision.build()
+        
+        return super(RevisionBuildView, self).get(request, *args, **kwargs)
 
 
 class InstanceViewSet(viewsets.ModelViewSet):
@@ -33,24 +44,23 @@ class InstanceViewSet(viewsets.ModelViewSet):
     queryset = Instance.objects.all()
 
 
-class InstanceView(RetrieveAPIView):
+class InstanceActionView(RetrieveAPIView):
     serializer_class = InstanceSerializer
     queryset = Instance.objects.all()
 
     def get_local_instance(self):
-        instance = self.get_object()
-        return LocalInstance(instance)
+        return LocalInstance(self.get_object())
 
 
-class InstanceInstallView(InstanceView):
-    def get(self, request, **kwargs):
+class InstanceInstallView(InstanceActionView):
+    def get(self, request, *args, **kwargs):
         local_instance = self.get_local_instance()
         local_instance.install()
 
-        return super(InstanceInstallView, self).get(request, **kwargs)
+        return super(InstanceInstallView, self).get(request, *args, **kwargs)
 
 
-class InstanceStartView(InstanceView):
+class InstanceStartView(InstanceActionView):
     def get(self, request, **kwargs):
         local_instance = self.get_local_instance()
         pid = local_instance.start()
@@ -63,9 +73,25 @@ class InstanceStartView(InstanceView):
         return super(InstanceStartView, self).get(request, **kwargs)
 
 
+class InfoRevisionLatestView(APIView):
+    def get(self, request):
+        return Response(data=get_latest_revision())
+
+
+class InfoLoadAvgView(APIView):
+    def get(self, request):
+        return Response(data=get_load_avg())
+
+
 def get_latest_revision():
     # svn info | grep Revision | cut -c11-
     svn = Popen(['svn', 'info', REPOSITORY_URL], stdout=PIPE)
     grep = Popen(['grep', 'Revision'], stdin=svn.stdout, stdout=PIPE)
     cut = run(['cut', '-c11-'], stdin=grep.stdout, stdout=PIPE, encoding='utf-8')
     return cut.stdout.strip()
+
+
+def get_load_avg():
+    # cat /proc/loadavg
+    cat = run(['cat', '/proc/loadavg'], stdout=PIPE, encoding='utf-8')
+    return cat.stdout.strip()

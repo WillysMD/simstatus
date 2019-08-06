@@ -16,7 +16,8 @@ export class ApiService {
   private revisionsUrl = 'http://localhost:8000/api/revisions/';
   private paksUrl = 'http://localhost:8000/api/paks/';
   private savesUrl = 'http://localhost:8000/api/saves/';
-  private revisionLatestUrl = 'http://localhost:8000/api/revision/latest/';
+  private infoRevisionLatestUrl = 'http://localhost:8000/api/info/revision/latest/';
+  private infoLoadAvgUrl = 'http://localhost:8000/api/info/loadavg/';
 
   constructor(private httpClient: HttpClient) {
   }
@@ -61,8 +62,8 @@ export class ApiService {
     return this.httpClient.get<Revision>(url, httpDefaultOptions);
   }
 
-  revisionGetLatest() {
-    return this.httpClient.get<number>(this.revisionLatestUrl);
+  revisionBuild(url: string) {
+    return this.httpClient.get<Revision>(url + 'build/', httpDefaultOptions);
   }
 
   paksList() {
@@ -117,6 +118,14 @@ export class ApiService {
         instance.savegame = savegame;
       });
     }
+  }
+
+  infoRevisionLatest() {
+    return this.httpClient.get<number>(this.infoRevisionLatestUrl);
+  }
+
+  infoLoadAvg() {
+    return this.httpClient.get<string>(this.infoLoadAvgUrl);
   }
 }
 

@@ -21,7 +21,7 @@ class LocalRevision:
 
         self.clone_path = os.path.join(self.dir, 'code')
         self.install_path = os.path.join(self.dir, 'simutrans')
-        self.build_file = os.path.join(self.dir, 'compiling')
+        self.build_file = os.path.join(self.dir, 'building')
 
     @property
     def status(self):

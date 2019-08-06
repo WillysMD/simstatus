@@ -31,7 +31,7 @@ export class RevisionsComponent implements OnInit {
   private list() {
     this._apiService.revisionsList().subscribe({
       error: err => this._errorSnack.open(errorMessage(err), ERROR_SNACK_ACTION, ERROR_SNACK_CONFIG),
-      next: (revisions) => this.revisions = revisions,
+      next: revisions => this.revisions = revisions,
       complete: () => this.sort()
     });
   }
@@ -63,6 +63,13 @@ export class RevisionsComponent implements OnInit {
     return this.revisions.indexOf(revision);
   }
 
+  build(i: number) {
+    this.revisions[i].status = RevisionStatusCode.BUIDLING;
+    this._apiService.revisionBuild(this.revisions[i].url).subscribe({
+      next: response => this.revisions[i] = response
+    });
+  }
+
   openCreateDialog() {
     const createDialogRef = this._revisionDialog.open(RevisionEditDialogComponent, {
       data: {revision: {} as Revision, list: this.revisions}
@@ -79,7 +86,7 @@ export class RevisionsComponent implements OnInit {
             // Reload list to get status code
             this.list();
           },
-          next: (response) => this.revisions[i] = response,
+          next: response => this.revisions[i] = response,
         });
       }
     });
