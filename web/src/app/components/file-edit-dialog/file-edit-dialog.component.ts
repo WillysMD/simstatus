@@ -17,7 +17,7 @@ interface FileDialogData {
 export class FileEditDialogComponent {
 
   private edited = false;
-  private fileForm = new FormGroup({
+  fileForm = new FormGroup({
     name: new FormControl(this.data.file.name, [
       Validators.required,
       Validators.pattern('[a-zA-Z0-9\-_]+')

@@ -24,7 +24,7 @@ interface InstanceDialogData {
 export class InstanceEditDialogComponent {
 
   private edited = false;
-  private instanceForm = new FormGroup({
+  instanceForm = new FormGroup({
     name: new FormControl(this.data.instance.name, [
       Validators.required,
       Validators.pattern('[a-zA-Z0-9\-_]+')

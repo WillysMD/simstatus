@@ -17,8 +17,8 @@ export interface RevisionData {
 export class RevisionEditDialogComponent implements OnInit {
 
   private edited = false;
-  private latestRevision: number;
-  private revisionForm = new FormGroup({
+  latestRevision: number;
+  revisionForm = new FormGroup({
     r: new FormControl(this.data.revision.r, [
       Validators.required,
       Validators.min(8503),
@@ -63,7 +63,7 @@ export class RevisionEditDialogComponent implements OnInit {
 
   ngOnInit() {
     if (this.latestRevision === undefined) {
-      this._apiService.revisionGetLatest().subscribe({
+      this._apiService.infoRevisionLatest().subscribe({
         next: latestRevision => this.latestRevision = latestRevision
       });
     }
