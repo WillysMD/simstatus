@@ -9,7 +9,7 @@ import {
   MatButtonModule, MatCheckboxModule,
   MatDialogModule, MatFormFieldModule,
   MatIconModule, MatInputModule,
-  MatListModule, MatProgressSpinnerModule, MatSelectModule, MatSnackBarModule,
+  MatListModule, MatProgressSpinnerModule, MatSelectModule, MatSnackBarModule, MatSortModule,
   MatToolbarModule
 } from '@angular/material';
 import {HttpClientModule} from '@angular/common/http';
@@ -23,6 +23,7 @@ import {SavesComponent} from './components/saves/saves.component';
 import {FileEditDialogComponent} from './components/file-edit-dialog/file-edit-dialog.component';
 import {RevisionsComponent} from './components/revisions/revisions.component';
 import {RevisionEditDialogComponent} from './components/revision-edit-dialog/revision-edit-dialog.component';
+import {StatusBarComponent} from './components/status-bar/status-bar.component';
 
 @NgModule({
   declarations: [
@@ -36,6 +37,7 @@ import {RevisionEditDialogComponent} from './components/revision-edit-dialog/rev
     FileEditDialogComponent,
     RevisionsComponent,
     RevisionEditDialogComponent,
+    StatusBarComponent,
   ],
   entryComponents: [
     InstanceEditDialogComponent,
@@ -60,6 +62,7 @@ import {RevisionEditDialogComponent} from './components/revision-edit-dialog/rev
     MatCheckboxModule,
     MatSelectModule,
     MatProgressSpinnerModule,
+    MatSortModule,
   ],
   exports: [],
   providers: [
