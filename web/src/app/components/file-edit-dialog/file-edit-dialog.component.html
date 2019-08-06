@@ -1,15 +1,24 @@
 <h2 mat-dialog-title>File options</h2>
+
 <mat-dialog-content>
   <form [formGroup]="fileForm">
-    <mat-form-field>
-      <input matInput formControlName="name" type="text" placeholder="Name">
-    </mat-form-field>
-    <br>
-    <mat-form-field>
-      <input matInput formControlName="version" type="text" placeholder="Version">
-    </mat-form-field>
-    <br>
-    <input (change)="onFileChange($event.target.files)" type="file">
+    <div>
+      <mat-form-field>
+        <mat-label>Name</mat-label>
+        <input matInput formControlName="name" type="text">
+      </mat-form-field>
+    </div>
+
+    <div>
+      <mat-form-field>
+        <mat-label>Version</mat-label>
+        <input matInput formControlName="version" type="text">
+      </mat-form-field>
+    </div>
+
+    <div>
+      <input (change)="onFileChange($event.target.files)" type="file">
+    </div>
   </form>
 </mat-dialog-content>
 <mat-dialog-actions>

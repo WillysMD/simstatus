@@ -1,17 +1,24 @@
 <h2 mat-dialog-title>Revision options</h2>
+
 <mat-dialog-content>
   <form [formGroup]="revisionForm">
-    <mat-form-field>
-      <input matInput formControlName="r" type="number" placeholder="Revision">
-    </mat-form-field>
-    <br>
-    <span *ngIf="latestRevision">Latest revision is {{latestRevision}}</span>
-    <br>
-    <mat-form-field>
-      <input matInput formControlName="alias" type="text" placeholder="Stable version (optional)">
-    </mat-form-field>
+    <div>
+      <mat-form-field>
+        <mat-label>Revision</mat-label>
+        <input matInput formControlName="r" type="number" [max]="latestRevision">
+        <mat-hint *ngIf="latestRevision">Latest revision is {{latestRevision}}</mat-hint>
+      </mat-form-field>
+    </div>
+
+    <div>
+      <mat-form-field>
+        <mat-label>Stable version (optional)</mat-label>
+        <input matInput formControlName="alias" type="text">
+      </mat-form-field>
+    </div>
   </form>
 </mat-dialog-content>
+
 <mat-dialog-actions>
   <button (click)="save()" [disabled]="!this.revisionForm.valid" mat-button color="primary">Build</button>
   <button (click)="closeConfirm('Are you sure want to discard your changes?')" mat-button>Cancel</button>
