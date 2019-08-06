@@ -7,10 +7,7 @@ desktop.ini
 ._*
 
 # PyCharm
-/.idea/workspace.xml
-/.idea/usage.statistics.xml
-/.idea/tasks.xml
-
+.idea
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
