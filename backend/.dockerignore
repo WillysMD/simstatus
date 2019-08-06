@@ -1,0 +1,10 @@
+# Python/Django
+
+**/db.sqlite3
+**/__pycache__/
+
+# Project specific
+resources/builds/*
+!resources/builds/config.default
+resources/instances/*
+resources/uploads/*

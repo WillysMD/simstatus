@@ -1,0 +1,39 @@
+version: '3'
+
+services:
+  django:
+    build: ./backend
+    volumes:
+      - ./backend:/django
+      - uploads:/django/resources/uploads
+    networks:
+      - nginx_network
+
+  web:
+    build: ./web
+    volumes:
+      - ./web:/web
+    networks:
+      - nginx_network
+
+  nginx:
+    restart: always
+    image: nginx:stable-alpine
+    ports:
+      - 8080:8080
+    volumes:
+      - ./etc/nginx/conf.d:/etc/nginx/conf.d
+      - uploads:/www/uploads
+    depends_on:
+      - django
+      - web
+    networks:
+      - nginx_network
+
+
+networks:
+  nginx_network:
+    driver: bridge
+
+volumes:
+  uploads:
