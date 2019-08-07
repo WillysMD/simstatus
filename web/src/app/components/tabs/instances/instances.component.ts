@@ -1,6 +1,6 @@
-import {Component, OnInit} from '@angular/core';
+import {AfterViewInit, Component, OnInit, ViewChild} from '@angular/core';
 import {ApiService, errorMessage, Instance, InstanceStatusCode} from '../../../api.service';
-import {MatDialog, MatSnackBar} from '@angular/material';
+import {MatDialog, MatSnackBar, MatSort, Sort} from '@angular/material';
 import {InstanceEditDialogComponent} from '../../dialogs/instance-edit-dialog/instance-edit-dialog.component';
 import {ConfirmDialogComponent} from '../../dialogs/confirm-dialog/confirm-dialog.component';
 
@@ -14,10 +14,12 @@ const ERROR_SNACK_CONFIG = {
   templateUrl: './instances.component.html',
   styleUrls: ['./instances.component.sass']
 })
-export class InstancesComponent implements OnInit {
+export class InstancesComponent implements AfterViewInit {
 
   instances: Instance[];
   InstanceStatusCode: any = InstanceStatusCode;
+
+  private sortOptions = {active: 'name', direction: 'asc'};
 
   constructor(private _apiService: ApiService,
               private _editDialog: MatDialog,
@@ -25,9 +27,6 @@ export class InstancesComponent implements OnInit {
               private _errorSnack: MatSnackBar) {
   }
 
-  /**
-   * Update the list of instances
-   */
   private list() {
     this._apiService.instancesList().subscribe({
       error: err => {
@@ -35,13 +34,25 @@ export class InstancesComponent implements OnInit {
       },
       next: instances => {
         // Get the file and save infos for each instance
+        // TODO: reduce the number of requests by serializing the related models
         for (const instance of instances) {
           this.getRelatedInfos(instance);
         }
         this.instances = instances;
       },
-      complete: () => this.sort('name')
+      complete: () => this.sort()
     });
+  }
+
+  private sort() {
+    if (this.sortOptions) {
+      const col = this.sortOptions.active;
+      const isAsc = this.sortOptions.direction === 'asc';
+
+      this.instances.sort((a, b) => {
+        return (a[col] < b[col] ? -1 : 1) * (isAsc ? 1 : -1);
+      });
+    }
   }
 
   /**
@@ -54,21 +65,6 @@ export class InstancesComponent implements OnInit {
     this._apiService.addSaveInfo(instance);
   }
 
-  /**
-   * Sort the instance list
-   * @param by - Property of Instance to sort by
-   */
-  private sort(by: string = 'name') {
-    this.instances.sort((a, b) => {
-      if (a[by] > b[by]) {
-        return -1;
-      } else if (a[by] > b[by]) {
-        return 1;
-      } else {
-        return 0;
-      }
-    });
-  }
 
   /**
    * Insert a instance and keep the array sorted
@@ -86,9 +82,7 @@ export class InstancesComponent implements OnInit {
    */
   refresh() {
     this.instances = [];
-    // TODO: add spinner
     this.list();
-    console.log('refresh');
   }
 
   /**
@@ -117,7 +111,7 @@ export class InstancesComponent implements OnInit {
     this._apiService.instanceStart(this.instances[i]).subscribe({
       error: err => {
         this.instances[i].status = InstanceStatusCode.READY;
-        this._errorSnack.open(err.message, ERROR_SNACK_ACTION, ERROR_SNACK_CONFIG)
+        this._errorSnack.open(err.message, ERROR_SNACK_ACTION, ERROR_SNACK_CONFIG);
       },
       next: instance => this.instances[i].status = instance.status
     });
@@ -197,8 +191,12 @@ export class InstancesComponent implements OnInit {
     });
   }
 
-  ngOnInit() {
-    // Initialize the list
+  onSortChange(sortOptions: Sort) {
+    this.sortOptions = sortOptions;
+    this.sort();
+  }
+
+  ngAfterViewInit() {
     this.list();
     // Auto refresh the list
     setInterval(() => {

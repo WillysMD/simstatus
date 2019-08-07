@@ -1,8 +1,8 @@
-<mat-list>
+<mat-list matSort (matSortChange)="onSortChange($event)" matSortActive="name" matSortDirection="asc">
   <mat-list-item class="header">
     <div class="switch"></div>
-    <div class="name">Instance</div>
-    <div class="port">Port</div>
+    <div mat-sort-header="name" class="name">Instance</div>
+    <div mat-sort-header="port" class="port">Port</div>
     <div class="revision">Revision</div>
     <div class="lang">Language</div>
     <div class="debug">Debug</div>
@@ -10,8 +10,8 @@
     <div class="save">Save</div>
     <div class="fill"></div>
     <div class="actions"></div>
-    <mat-divider></mat-divider>
   </mat-list-item>
+  <mat-divider></mat-divider>
   <mat-list-item *ngFor="let instance of instances; index as i">
     <div [ngSwitch]="instance.status" class="switch">
       <button *ngSwitchCase="InstanceStatusCode.RUNNING" mat-icon-button aria-label="Stop">
@@ -23,15 +23,14 @@
       <span *ngSwitchCase="InstanceStatusCode.BUILDING">
         <mat-spinner diameter="20" aria-label="Building"></mat-spinner>
       </span>
-      <button (click)="install(i)" *ngSwitchCase="InstanceStatusCode.CREATED" mat-icon-button aria-label="Install instance">
+      <button (click)="install(i)" *ngSwitchCase="InstanceStatusCode.CREATED" mat-icon-button
+              aria-label="Install instance">
         <mat-icon>build</mat-icon>
       </button>
     </div>
     <div class="name">{{instance.name}}</div>
     <div class="port">{{instance.port}}</div>
-    <div class="revision">
-      <a mat-button routerLink="revisions" fragment="{{instance.revision.r}}">{{instance.revision.r}}</a>
-    </div>
+    <div class="revision">{{instance.revision.r}}</div>
     <div class="lang">{{instance.lang}}</div>
     <div class="debug">{{instance.debug}}</div>
     <div class="pak">
