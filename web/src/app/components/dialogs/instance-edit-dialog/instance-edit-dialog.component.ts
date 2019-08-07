@@ -28,12 +28,12 @@ export class InstanceEditDialogComponent {
     name: new FormControl(this.data.instance.name, [
       Validators.required,
       Validators.pattern('[a-zA-Z0-9\-_]+'),
-      nameIsUnique(this.data.list)
+      nameIsUnique(this.data)
     ]),
     port: new FormControl(this.data.instance.port || 13353, [
       Validators.required,
       Validators.pattern('[0-9]+'),
-      portIsUnique(this.data.list)
+      portIsUnique(this.data)
     ]),
     revision: new FormControl(null, [
       Validators.required,
@@ -68,19 +68,19 @@ export class InstanceEditDialogComponent {
               private _createPakDialog: MatDialog,
               private _createSaveDialog: MatDialog,
               private _errorSnack: MatSnackBar) {
-    if (this.data.instance.revision != null) {
+    if (this.data.instance.revision) {
       this.instanceForm.patchValue({
         revision: (this.data.instance.revision as Revision).url
       });
     }
 
-    if (this.data.instance.pak != null) {
+    if (this.data.instance.pak) {
       this.instanceForm.patchValue({
         pak: (this.data.instance.pak as FileInfo).url
       });
     }
 
-    if (this.data.instance.savegame != null) {
+    if (this.data.instance.savegame) {
       this.instanceForm.patchValue({
         savegame: (this.data.instance.savegame as FileInfo).url
       });
@@ -175,9 +175,9 @@ export class InstanceEditDialogComponent {
   }
 }
 
-function nameIsUnique(instances: Instance[]): ValidatorFn {
+function nameIsUnique(data: InstanceDialogData): ValidatorFn {
   return (control: AbstractControl): { [key: string]: any } => {
-    if (checkUnique(instances, control, 'name')) {
+    if (checkUnique(data, control, 'name')) {
       return {nameNotUnique: {value: control.value}};
     } else {
       return null;
@@ -185,9 +185,9 @@ function nameIsUnique(instances: Instance[]): ValidatorFn {
   };
 }
 
-function portIsUnique(instances: Instance[]): ValidatorFn {
+function portIsUnique(data: InstanceDialogData): ValidatorFn {
   return (control: AbstractControl): { [key: string]: any } => {
-    if (checkUnique(instances, control, 'port')) {
+    if (checkUnique(data, control, 'port')) {
       return {portNotUnique: {value: control.value}};
     } else {
       return null;
@@ -195,9 +195,9 @@ function portIsUnique(instances: Instance[]): ValidatorFn {
   };
 }
 
-function checkUnique(instances: Instance[], control: AbstractControl, field: string) {
-  for (const instance of instances) {
-    if (instance [field] === control.value) {
+function checkUnique(data: InstanceDialogData, control: AbstractControl, field: string) {
+  for (const instance of data.list) {
+    if (data.instance.url !== instance.url && instance[field] === control.value) {
       return true;
     }
   }
