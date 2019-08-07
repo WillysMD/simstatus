@@ -1,6 +1,6 @@
-import {AfterViewInit, Component, OnInit, ViewChild} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {ApiService, errorMessage, Instance, InstanceStatusCode} from '../../../api.service';
-import {MatDialog, MatSnackBar, MatSort, Sort} from '@angular/material';
+import {MatDialog, MatSnackBar, Sort} from '@angular/material';
 import {InstanceEditDialogComponent} from '../../dialogs/instance-edit-dialog/instance-edit-dialog.component';
 import {ConfirmDialogComponent} from '../../dialogs/confirm-dialog/confirm-dialog.component';
 
@@ -14,7 +14,7 @@ const ERROR_SNACK_CONFIG = {
   templateUrl: './instances.component.html',
   styleUrls: ['./instances.component.sass']
 })
-export class InstancesComponent implements AfterViewInit {
+export class InstancesComponent implements OnInit {
 
   instances: Instance[];
   InstanceStatusCode: any = InstanceStatusCode;
@@ -196,7 +196,7 @@ export class InstancesComponent implements AfterViewInit {
     this.sort();
   }
 
-  ngAfterViewInit() {
+  ngOnInit() {
     this.list();
     // Auto refresh the list
     setInterval(() => {
