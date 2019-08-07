@@ -194,6 +194,16 @@ class LocalInstance:
         else:
             return True
 
+    def rename(self, new_name):
+        """Renames the instance directory to new name and changes all associated virables"""
+        if self.is_running():
+            self.stop()
+        new_dir = os.path.join(RESOURCES_DIR, 'instances', new_name)
+        os.rename(self.dir, new_dir)
+        # Don't forget to change the appropriate paths
+        self.dir = new_dir
+        self.revision_dir = os.path.join(self.dir, self.r)
+
     def remove(self):
         """Remove all the directories and files associated with the instance
         This will not remove any paks or saves
