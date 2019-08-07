@@ -9,14 +9,14 @@ export class AppComponent {
   title = 'simuhead-frontend';
 
   activatedComponent: any;
+  refreshButton: boolean;
 
   onRouteActivate(component) {
     this.activatedComponent = component;
+    this.refreshButton = !!(component.refresh);
   }
 
   refresh() {
-    if (this.activatedComponent.refresh) {
-      this.activatedComponent.refresh();
-    }
+    this.activatedComponent.refresh();
   }
 }

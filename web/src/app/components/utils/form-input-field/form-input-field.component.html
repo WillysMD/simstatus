@@ -2,5 +2,7 @@
   <mat-label>{{label}}</mat-label>
   <input matInput [formControl]="formControl" [type]="type">
   <mat-hint *ngIf="hint">{{hint}}</mat-hint>
-  <mat-error *ngIf="formControl.errors.portNotUnique">Port is already taken</mat-error>
+  <div *ngIf="formControl.invalid && (formControl.dirty || formControl.touched)">
+    <mat-error *ngIf="formControl.errors.portNotUnique">Port is already taken</mat-error>
+  </div>
 </mat-form-field>

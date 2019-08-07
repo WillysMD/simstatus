@@ -4,12 +4,26 @@
 <mat-dialog-content>
   <form [formGroup]="instanceForm">
     <div>
-      <app-form-input-field [formControl]="instanceForm.controls.name" label="Name" type="text"></app-form-input-field>
+      <mat-form-field>
+        <mat-label>Name</mat-label>
+        <input matInput formControlName="name" type="text">
+        <mat-error
+          *ngIf="nameControl.invalid && nameControl.errors.nameNotUnique">
+          Instance already exists
+        </mat-error>
+      </mat-form-field>
     </div>
 
     <div>
-      <app-form-input-field [formControl]="instanceForm.controls.port" label="Port" type="number"
-                        hint="TCP traffic has to be allowed through the firewall"></app-form-input-field>
+      <mat-form-field>
+        <mat-label>Port</mat-label>
+        <input matInput formControlName="port" type="number" placeholder="13353 (default)">
+        <mat-hint>TCP traffic has to be allowed through the firewall</mat-hint>
+        <mat-error
+          *ngIf="portControl.invalid && portControl.errors.portNotUnique">
+          Port is already in use
+        </mat-error>
+      </mat-form-field>
     </div>
 
     <div>
