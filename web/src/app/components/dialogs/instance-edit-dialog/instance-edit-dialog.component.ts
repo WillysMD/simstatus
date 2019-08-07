@@ -30,7 +30,7 @@ export class InstanceEditDialogComponent {
       Validators.pattern('[a-zA-Z0-9\-_]+'),
       nameIsUnique(this.data)
     ]),
-    port: new FormControl(this.data.instance.port || 13353, [
+    port: new FormControl(this.data.instance.port, [
       Validators.required,
       Validators.pattern('[0-9]+'),
       portIsUnique(this.data)
@@ -108,9 +108,14 @@ export class InstanceEditDialogComponent {
     this._apiService.savesList().subscribe(saves => this.saves = saves);
   }
 
-  /**
-   * Check for edits and close the dialog
-   */
+  get nameControl() {
+    return this.instanceForm.get('name');
+  }
+
+  get portControl() {
+    return this.instanceForm.get('port');
+  }
+
   closeConfirm(prompt: string) {
     if (this.edited) {
       // If the content has been edited, open a confirm dialog before closing
@@ -197,7 +202,7 @@ function portIsUnique(data: InstanceDialogData): ValidatorFn {
 
 function checkUnique(data: InstanceDialogData, control: AbstractControl, field: string) {
   for (const instance of data.list) {
-    if (data.instance.url !== instance.url && instance[field] === control.value) {
+    if (instance.url !== data.instance.url && instance[field] === control.value) {
       return true;
     }
   }
