@@ -43,6 +43,11 @@ class InstanceViewSet(viewsets.ModelViewSet):
     serializer_class = InstanceSerializer
     queryset = Instance.objects.all()
 
+    def update(self, request, *args, **kwargs):
+        local_instance = LocalInstance(self.get_object())
+        local_instance.rename(request.data['name'])
+        return super(InstanceViewSet, self).update(request, *args, **kwargs)
+
 
 class InstanceActionView(RetrieveAPIView):
     serializer_class = InstanceSerializer
