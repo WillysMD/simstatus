@@ -1,8 +1,8 @@
 import {Component, OnInit} from '@angular/core';
-import {ApiService, errorMessage, Revision, RevisionStatusCode} from '../../api.service';
+import {ApiService, errorMessage, Revision, RevisionStatusCode} from '../../../api.service';
 import {MatDialog, MatSnackBar} from '@angular/material';
-import {RevisionEditDialogComponent} from '../revision-edit-dialog/revision-edit-dialog.component';
-import {ConfirmDialogComponent} from '../confirm-dialog/confirm-dialog.component';
+import {RevisionEditDialogComponent} from '../../dialogs/revision-edit-dialog/revision-edit-dialog.component';
+import {ConfirmDialogComponent} from '../../dialogs/confirm-dialog/confirm-dialog.component';
 
 const ERROR_SNACK_ACTION = 'OK';
 const ERROR_SNACK_CONFIG = {
@@ -61,6 +61,11 @@ export class RevisionsComponent implements OnInit {
     this.revisions.push(revision);
     this.sort();
     return this.revisions.indexOf(revision);
+  }
+
+  refresh() {
+    this.revisions = [];
+    this.list();
   }
 
   build(i: number) {

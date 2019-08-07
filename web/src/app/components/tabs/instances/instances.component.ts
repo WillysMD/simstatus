@@ -1,8 +1,8 @@
 import {Component, OnInit} from '@angular/core';
-import {ApiService, errorMessage, Instance, InstanceStatusCode} from '../../api.service';
+import {ApiService, errorMessage, Instance, InstanceStatusCode} from '../../../api.service';
 import {MatDialog, MatSnackBar} from '@angular/material';
-import {InstanceEditDialogComponent} from '../instance-edit-dialog/instance-edit-dialog.component';
-import {ConfirmDialogComponent} from '../confirm-dialog/confirm-dialog.component';
+import {InstanceEditDialogComponent} from '../../dialogs/instance-edit-dialog/instance-edit-dialog.component';
+import {ConfirmDialogComponent} from '../../dialogs/confirm-dialog/confirm-dialog.component';
 
 const ERROR_SNACK_ACTION = 'OK';
 const ERROR_SNACK_CONFIG = {
@@ -34,7 +34,7 @@ export class InstancesComponent implements OnInit {
         this._errorSnack.open(errorMessage(err), ERROR_SNACK_ACTION, ERROR_SNACK_CONFIG);
       },
       next: instances => {
-        // Get the pak and save infos for each instance
+        // Get the file and save infos for each instance
         for (const instance of instances) {
           this.getRelatedInfos(instance);
         }
@@ -45,7 +45,7 @@ export class InstancesComponent implements OnInit {
   }
 
   /**
-   * Add revision, pak and save info to an instance
+   * Add revision, file and save info to an instance
    * @param instance to udpate
    */
   private getRelatedInfos(instance) {
@@ -88,6 +88,7 @@ export class InstancesComponent implements OnInit {
     this.instances = [];
     // TODO: add spinner
     this.list();
+    console.log('refresh');
   }
 
   /**
@@ -159,7 +160,7 @@ export class InstancesComponent implements OnInit {
       if (data != null) {
         // Switch to spinner mode while the server is installing
         data.status = InstanceStatusCode.BUILDING;
-        // Replace with edited instance and get revision, pak and save infos
+        // Replace with edited instance and get revision, file and save infos
         this.instances[i] = data as Instance;
         this.getRelatedInfos(this.instances[i]);
 

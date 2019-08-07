@@ -4,18 +4,12 @@
 <mat-dialog-content>
   <form [formGroup]="instanceForm">
     <div>
-      <mat-form-field>
-        <mat-label>Name</mat-label>
-        <input matInput formControlName="name" type="text">
-      </mat-form-field>
+      <app-form-input-field [formControl]="instanceForm.controls.name" label="Name" type="text"></app-form-input-field>
     </div>
 
     <div>
-      <mat-form-field>
-        <mat-label>Port</mat-label>
-        <input matInput formControlName="port" type="number">
-        <mat-hint>TCP traffic has to be allowed through the firewall</mat-hint>
-      </mat-form-field>
+      <app-form-input-field [formControl]="instanceForm.controls.port" label="Port" type="number"
+                        hint="TCP traffic has to be allowed through the firewall"></app-form-input-field>
     </div>
 
     <div>
@@ -106,3 +100,4 @@
   <button (click)="save()" [disabled]="!instanceForm.valid" mat-button color="primary">Save</button>
   <button (click)="closeConfirm('Are you sure want to discard your changes?')" mat-button>Cancel</button>
 </mat-dialog-actions>
+

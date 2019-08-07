@@ -1,8 +1,8 @@
 import {Component, OnInit} from '@angular/core';
-import {ApiService, FileInfo, sortFileInfo} from '../../api.service';
+import {ApiService, FileInfo, sortFileInfo} from '../../../api.service';
 import {MatDialog, MatSnackBar} from '@angular/material';
-import {FileEditDialogComponent} from '../file-edit-dialog/file-edit-dialog.component';
-import {ConfirmDialogComponent} from '../confirm-dialog/confirm-dialog.component';
+import {FileEditDialogComponent} from '../../dialogs/file-edit-dialog/file-edit-dialog.component';
+import {ConfirmDialogComponent} from '../../dialogs/confirm-dialog/confirm-dialog.component';
 
 const ERROR_SNACK_ACTION = 'OK';
 const ERROR_SNACK_CONFIG = {
@@ -16,7 +16,8 @@ const ERROR_SNACK_CONFIG = {
 })
 export class PaksComponent implements OnInit {
 
-  paks: FileInfo[];
+  title: 'Pak';
+  files: FileInfo[];
 
   constructor(private _apiService: ApiService,
               private _editDialog: MatDialog,
@@ -27,27 +28,24 @@ export class PaksComponent implements OnInit {
   private list() {
     this._apiService.paksList().subscribe({
       error: err => this._errorSnack.open(err.message, ERROR_SNACK_ACTION, ERROR_SNACK_CONFIG),
-      next: paks => this.paks = paks,
+      next: paks => this.files = paks,
       complete: () => this.sort()
     });
   }
 
-  /**
-   * Sort the paks list
-   */
   sort() {
-    this.paks.sort(sortFileInfo);
+    this.files.sort(sortFileInfo);
   }
 
   openCreateDialog() {
     const createDialogRef = this._editDialog.open(FileEditDialogComponent, {
-      data: {file: {} as FileInfo, list: this.paks}
+      data: {file: {} as FileInfo, list: this.files}
     });
     createDialogRef.afterClosed().subscribe(data => {
       if (data) {
         this._apiService.pakPost(data).subscribe({
           error: err => this._errorSnack.open(err.message, ERROR_SNACK_ACTION, ERROR_SNACK_CONFIG),
-          next: (pak) => this.paks.push(pak),
+          next: (pak) => this.files.push(pak),
           complete: () => this.sort()
         });
       }
@@ -58,9 +56,9 @@ export class PaksComponent implements OnInit {
     const confirmDialogRef = this._confirmDialog.open(ConfirmDialogComponent, {data: prompt});
     confirmDialogRef.afterClosed().subscribe((answer) => {
       if (answer) {
-        this._apiService.pakDelete(this.paks[i]).subscribe({
+        this._apiService.pakDelete(this.files[i]).subscribe({
           error: err => this._errorSnack.open(err.message, ERROR_SNACK_ACTION, ERROR_SNACK_CONFIG),
-          complete: () => this.paks.splice(i, 1)
+          complete: () => this.files.splice(i, 1)
         });
       }
     });

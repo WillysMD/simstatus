@@ -1,7 +1,7 @@
-<app-navbar></app-navbar>
+<app-navbar (doRefresh)="refresh()"></app-navbar>
 
 <div class="container">
-  <router-outlet></router-outlet>
+  <router-outlet (activate)="onRouteActivate($event)"></router-outlet>
 </div>
 
 <app-status-bar></app-status-bar>

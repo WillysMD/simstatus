@@ -1,6 +1,6 @@
 import {Component, Inject} from '@angular/core';
 import {MAT_DIALOG_DATA, MatDialog, MatDialogRef, MatSnackBar} from '@angular/material';
-import {Instance, ApiService, FileInfo, Revision} from '../../api.service';
+import {Instance, ApiService, FileInfo, Revision} from '../../../api.service';
 import {ConfirmDialogComponent} from '../confirm-dialog/confirm-dialog.component';
 import {AbstractControl, FormControl, FormGroup, ValidatorFn, Validators} from '@angular/forms';
 import {FileEditDialogComponent} from '../file-edit-dialog/file-edit-dialog.component';
@@ -27,7 +27,8 @@ export class InstanceEditDialogComponent {
   instanceForm = new FormGroup({
     name: new FormControl(this.data.instance.name, [
       Validators.required,
-      Validators.pattern('[a-zA-Z0-9\-_]+')
+      Validators.pattern('[a-zA-Z0-9\-_]+'),
+      nameIsUnique(this.data.list)
     ]),
     port: new FormControl(this.data.instance.port || 13353, [
       Validators.required,
@@ -174,13 +175,31 @@ export class InstanceEditDialogComponent {
   }
 }
 
+function nameIsUnique(instances: Instance[]): ValidatorFn {
+  return (control: AbstractControl): { [key: string]: any } => {
+    if (checkUnique(instances, control, 'name')) {
+      return {nameNotUnique: {value: control.value}};
+    } else {
+      return null;
+    }
+  };
+}
+
 function portIsUnique(instances: Instance[]): ValidatorFn {
   return (control: AbstractControl): { [key: string]: any } => {
-    for (const instance of instances) {
-      if (instance.port === control.value) {
-        return {portNotUnique: {value: control.value}};
-      }
+    if (checkUnique(instances, control, 'port')) {
+      return {portNotUnique: {value: control.value}};
+    } else {
+      return null;
     }
-    return null;
   };
+}
+
+function checkUnique(instances: Instance[], control: AbstractControl, field: string) {
+  for (const instance of instances) {
+    if (instance [field] === control.value) {
+      return true;
+    }
+  }
+  return false;
 }

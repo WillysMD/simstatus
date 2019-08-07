@@ -1,19 +1,19 @@
 <mat-list>
   <mat-list-item class="header">
-    <span class="name">Save</span>
+    <span class="name">Name</span>
     <span class="version">Version</span>
     <span class="file">File</span>
     <mat-divider></mat-divider>
   </mat-list-item>
-  <mat-list-item *ngFor="let save of saves; index as i">
-    <span class="name">{{save.name}}</span>
-    <span class="version">{{save.version}}</span>
-    <span class="file"><a mat-button href="{{save.file}}">Download</a></span>
+  <mat-list-item *ngFor="let file of files; index as i;">
+    <span class="name">{{file.name}}</span>
+    <span class="version">{{file.version}}</span>
+    <span class="file"><a mat-button href="{{file.file}}">Download</a></span>
     <span class="fill"></span>
     <span class="edit">
       <button
-        (click)="deleteConfirmDialog(i, 'Do you want to delete the following save: ' + save.name + '-' + save.version)"
-        mat-icon-button aria-label="Delete pak" [disabled]="save.protected">
+        (click)="deleteConfirmDialog(i, 'Do you want to delete the following file: ' + file.name + '-' + file.version)"
+        mat-icon-button aria-label="Delete pak" [disabled]="file.protected">
         <mat-icon>delete</mat-icon>
       </button>
     </span>
@@ -23,5 +23,5 @@
 
 <button (click)="openCreateDialog()" mat-button class="add-button">
   <mat-icon>add</mat-icon>
-  Save
+  File
 </button>

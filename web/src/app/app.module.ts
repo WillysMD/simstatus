@@ -13,17 +13,18 @@ import {
   MatToolbarModule
 } from '@angular/material';
 import {HttpClientModule} from '@angular/common/http';
-import {InstancesComponent} from './components/instances/instances.component';
-import {NavbarComponent} from './components/navbar/navbar.component';
-import {InstanceEditDialogComponent} from './components/instance-edit-dialog/instance-edit-dialog.component';
-import {ConfirmDialogComponent} from './components/confirm-dialog/confirm-dialog.component';
+import {InstancesComponent} from './components/tabs/instances/instances.component';
+import {NavbarComponent} from './components/ui/navbar/navbar.component';
+import {InstanceEditDialogComponent} from './components/dialogs/instance-edit-dialog/instance-edit-dialog.component';
+import {ConfirmDialogComponent} from './components/dialogs/confirm-dialog/confirm-dialog.component';
 import {ReactiveFormsModule} from '@angular/forms';
-import {PaksComponent} from './components/paks/paks.component';
-import {SavesComponent} from './components/saves/saves.component';
-import {FileEditDialogComponent} from './components/file-edit-dialog/file-edit-dialog.component';
-import {RevisionsComponent} from './components/revisions/revisions.component';
-import {RevisionEditDialogComponent} from './components/revision-edit-dialog/revision-edit-dialog.component';
-import {StatusBarComponent} from './components/status-bar/status-bar.component';
+import {PaksComponent} from './components/tabs/paks/paks.component';
+import {SavesComponent} from './components/tabs/saves/saves.component';
+import {FileEditDialogComponent} from './components/dialogs/file-edit-dialog/file-edit-dialog.component';
+import {RevisionsComponent} from './components/tabs/revisions/revisions.component';
+import {RevisionEditDialogComponent} from './components/dialogs/revision-edit-dialog/revision-edit-dialog.component';
+import {StatusBarComponent} from './components/ui/status-bar/status-bar.component';
+import {FormInputFieldComponent} from './components/utils/form-input-field/form-input-field.component';
 
 @NgModule({
   declarations: [
@@ -38,6 +39,7 @@ import {StatusBarComponent} from './components/status-bar/status-bar.component';
     RevisionsComponent,
     RevisionEditDialogComponent,
     StatusBarComponent,
+    FormInputFieldComponent,
   ],
   entryComponents: [
     InstanceEditDialogComponent,

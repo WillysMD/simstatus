@@ -1,8 +1,8 @@
 import {Component, OnInit} from '@angular/core';
-import {ApiService, FileInfo, sortFileInfo} from '../../api.service';
+import {ApiService, FileInfo, sortFileInfo} from '../../../api.service';
 import {MatDialog, MatSnackBar} from '@angular/material';
-import {FileEditDialogComponent} from '../file-edit-dialog/file-edit-dialog.component';
-import {ConfirmDialogComponent} from '../confirm-dialog/confirm-dialog.component';
+import {FileEditDialogComponent} from '../../dialogs/file-edit-dialog/file-edit-dialog.component';
+import {ConfirmDialogComponent} from '../../dialogs/confirm-dialog/confirm-dialog.component';
 
 const ERROR_SNACK_ACTION = 'OK';
 const ERROR_SNACK_CONFIG = {
@@ -11,12 +11,13 @@ const ERROR_SNACK_CONFIG = {
 
 @Component({
   selector: 'app-saves',
-  templateUrl: './saves.component.html',
-  styleUrls: ['./saves.component.sass']
+  templateUrl: '../paks/paks.component.html',
+  styleUrls: ['../paks/paks.component.sass']
 })
 export class SavesComponent implements OnInit {
 
-  saves: FileInfo[];
+  title: 'Save';
+  files: FileInfo[];
 
   constructor(private _apiService: ApiService,
               private _fileDialog: MatDialog,
@@ -27,27 +28,27 @@ export class SavesComponent implements OnInit {
   private list() {
     this._apiService.savesList().subscribe({
       error: err => this._errorSnack.open(err.message, ERROR_SNACK_ACTION, ERROR_SNACK_CONFIG),
-      next: saves => this.saves = saves,
+      next: saves => this.files = saves,
       complete: () => this.sort()
     });
   }
 
   /**
-   * Sort the saves list
+   * Sort the files list
    */
   sort() {
-    this.saves.sort(sortFileInfo);
+    this.files.sort(sortFileInfo);
   }
 
   openCreateDialog() {
     const createDialogRef = this._fileDialog.open(FileEditDialogComponent, {
-      data: {file: {} as FileInfo, list: this.saves}
+      data: {file: {} as FileInfo, list: this.files}
     });
     createDialogRef.afterClosed().subscribe(data => {
       if (data) {
         this._apiService.savePost(data).subscribe({
           error: err => this._errorSnack.open(err.message, ERROR_SNACK_ACTION, ERROR_SNACK_CONFIG),
-          next: (save) => this.saves.push(save),
+          next: (save) => this.files.push(save),
           complete: () => this.list()
         });
       }
@@ -58,9 +59,9 @@ export class SavesComponent implements OnInit {
     const confirmDialog = this._confirmDialog.open(ConfirmDialogComponent, {data: prompt});
     confirmDialog.afterClosed().subscribe((answer) => {
       if (answer) {
-        this._apiService.saveDelete(this.saves[i]).subscribe({
+        this._apiService.saveDelete(this.files[i]).subscribe({
           error: err => this._errorSnack.open(err.message, ERROR_SNACK_ACTION, ERROR_SNACK_CONFIG),
-          complete: () => this.saves.splice(i, 1)
+          complete: () => this.files.splice(i, 1)
         });
       }
     });
