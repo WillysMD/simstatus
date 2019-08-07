@@ -12,7 +12,7 @@
   </span>
   <span class="fill"></span>
   <span class="actions">
-    <button (click)="refresh()" mat-icon-button>
+    <button (click)="refresh()" *ngIf="refreshButton" mat-icon-button>
       <mat-icon>sync</mat-icon>
     </button>
   </span>

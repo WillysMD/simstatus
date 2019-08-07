@@ -1,4 +1,4 @@
-<app-navbar (doRefresh)="refresh()"></app-navbar>
+<app-navbar (doRefresh)="refresh()" [refreshButton]="refreshButton"></app-navbar>
 
 <div class="container">
   <router-outlet (activate)="onRouteActivate($event)"></router-outlet>
