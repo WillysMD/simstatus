@@ -117,6 +117,17 @@ export class InstancesComponent implements OnInit {
     });
   }
 
+  stop(i: number) {
+    this.instances[i].status = InstanceStatusCode.BUILDING;
+    this._apiService.instanceStop(this.instances[i]).subscribe({
+      error: err => {
+        this.instances[i].status = InstanceStatusCode.READY;
+        this._errorSnack.open(err.message, ERROR_SNACK_ACTION, ERROR_SNACK_CONFIG);
+      },
+      next: instance => this.instances[i].status = instance.status
+    });
+  }
+
   /**
    * Open the instance edit dialog with empty instance data
    */
