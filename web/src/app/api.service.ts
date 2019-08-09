@@ -46,6 +46,10 @@ export class ApiService {
     return this.httpClient.get<Instance>(instance.url + 'start/', httpDefaultOptions);
   }
 
+  instanceStop(instance: Instance) {
+    return this.httpClient.get<Instance>(instance.url + 'stop/', httpDefaultOptions);
+  }
+
   revisionsList() {
     return this.httpClient.get<Revision[]>(this.revisionsUrl, httpDefaultOptions);
   }

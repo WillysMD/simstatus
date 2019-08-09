@@ -1,4 +1,5 @@
 import os
+import time
 import psutil
 import shutil
 import zipfile
@@ -148,7 +149,6 @@ class LocalInstance:
         except psutil.NoSuchProcess:
             return None
         else:
-            print(process.status())
             if process.status() == psutil.STATUS_RUNNING:
                 return self._pid
             else:
@@ -222,6 +222,9 @@ class LocalInstance:
             if self._local_revision.is_installed():
                 # Copy the right revsion
                 shutil.copytree(self._local_revision.install_path, self.revision_dir)
+                # TODO: allow user to change simuconf.tab
+                with open(os.path.join(self.revision_dir, 'config', 'simuconf.tab'), 'a') as conf:
+                    conf.writelines('singleuser_install = 1')
         if not self._is_savegame_installed():
             # Copy the right savegame, create the save directory if it doesns't exist
             if not os.path.exists(self.savegame_dir):
@@ -243,7 +246,12 @@ class LocalInstance:
 
     def stop(self):
         """Stop the server"""
-        pass
+        print(self.pid)
+        if self.pid is not None:
+            process = psutil.Process(self.pid)
+            process.kill()
+            while process.is_running():
+                time.sleep(1)
 
     def restart(self):
         """Restart the server"""

@@ -14,7 +14,7 @@
   <mat-divider></mat-divider>
   <mat-list-item *ngFor="let instance of instances; index as i">
     <div [ngSwitch]="instance.status" class="switch">
-      <button *ngSwitchCase="InstanceStatusCode.RUNNING" mat-icon-button aria-label="Stop">
+      <button (click)="stop(i)" *ngSwitchCase="InstanceStatusCode.RUNNING" mat-icon-button aria-label="Stop">
         <mat-icon>pause</mat-icon>
       </button>
       <button (click)="start(i)" *ngSwitchCase="InstanceStatusCode.READY" mat-icon-button aria-label="Start">

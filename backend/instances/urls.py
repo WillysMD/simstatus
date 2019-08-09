@@ -1,7 +1,7 @@
 from django.urls import path
 from rest_framework.routers import DefaultRouter
 from .views import PakViewSet, SaveViewSet, RevisionViewSet, RevisionBuildView, InstanceViewSet, InstanceInstallView, \
-    InstanceStartView, InfoLoadAvgView, InfoRevisionLatestView
+    InstanceStartView, InstanceStopView, InfoLoadAvgView, InfoRevisionLatestView
 
 router = DefaultRouter()
 
@@ -17,6 +17,7 @@ urlpatterns.append(path('revisions/<int:pk>/build/', RevisionBuildView.as_view()
 # Routes for instance actions
 urlpatterns.append(path('instances/<int:pk>/install/', InstanceInstallView.as_view()))
 urlpatterns.append(path('instances/<int:pk>/start/', InstanceStartView.as_view()))
+urlpatterns.append(path('instances/<int:pk>/stop/', InstanceStopView.as_view()))
 
 # Routes for general infos
 urlpatterns.append(path('info/loadavg/', InfoLoadAvgView.as_view()))
