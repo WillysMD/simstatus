@@ -128,8 +128,9 @@ class LocalInstance:
         self.savegame = instance.savegame.file.path
         # Name of the savegame (to use as server start argument)
         self.savegame_name = (self.savegame.rsplit('/', 1)[-1]).rsplit('.', 1)[0]
+        self.savegame_dir = os.path.join(self.revision_dir, 'save')
         # Path to the installed savegame
-        self.savegame_file = os.path.join(self.revision_dir, self.savegame_name + '.sve')
+        self.savegame_file = os.path.join(self.savegame_dir, self.savegame_name + '.sve')
 
         # Saved pid, process might have died
         self._pid = instance.pid
@@ -147,7 +148,8 @@ class LocalInstance:
         except psutil.NoSuchProcess:
             return None
         else:
-            if process.status == psutil.STATUS_RUNNING:
+            print(process.status())
+            if process.status() == psutil.STATUS_RUNNING:
                 return self._pid
             else:
                 return None
@@ -221,7 +223,9 @@ class LocalInstance:
                 # Copy the right revsion
                 shutil.copytree(self._local_revision.install_path, self.revision_dir)
         if not self._is_savegame_installed():
-            # Copy the right savegame
+            # Copy the right savegame, create the save directory if it doesns't exist
+            if not os.path.exists(self.savegame_dir):
+                os.mkdir(self.savegame_dir)
             shutil.copyfile(self.savegame, self.savegame_file)
         if not self._is_pak_installed():
             # Unzip the pak
