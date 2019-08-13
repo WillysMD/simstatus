@@ -22,6 +22,19 @@ export class ApiService {
   constructor(private httpClient: HttpClient) {
   }
 
+
+  /*
+   * Generics
+   */
+
+  put(object: any) {
+    return this.httpClient.put<any>(object.url, object, httpDefaultOptions);
+  }
+
+  delete(object: any) {
+    return this.httpClient.delete(object.url, httpDefaultOptions);
+  }
+
   /*
    * Instances
    */
@@ -32,14 +45,6 @@ export class ApiService {
 
   instancePost(instance: Instance) {
     return this.httpClient.post<Instance>(this.instancesUrl, instance, httpDefaultOptions);
-  }
-
-  instancePut(instance: Instance) {
-    return this.httpClient.put<Instance>(instance.url, instance, httpDefaultOptions);
-  }
-
-  instanceDelete(instance: Instance) {
-    return this.httpClient.delete(instance.url, httpDefaultOptions);
   }
 
   instanceInstall(instance: Instance) {
@@ -66,10 +71,6 @@ export class ApiService {
     return this.httpClient.post<Revision>(this.revisionsUrl, data, httpDefaultOptions);
   }
 
-  revisionsDelete(revision: Revision) {
-    return this.httpClient.delete(revision.url, httpDefaultOptions);
-  }
-
   revisionGet(url: string) {
     return this.httpClient.get<Revision>(url, httpDefaultOptions);
   }
@@ -79,31 +80,15 @@ export class ApiService {
   }
 
   /*
-   * Paks
+   * Files
    */
 
   paksList() {
     return this.httpClient.get<FileInfo[]>(this.paksUrl, httpDefaultOptions);
   }
 
-  /*
-   * Saves
-   */
-
   savesList() {
     return this.httpClient.get<FileInfo[]>(this.savesUrl, httpDefaultOptions);
-  }
-
-  /*
-   * Generics
-   */
-
-  put(object: any) {
-    return this.httpClient.put<any>(object.url, object, httpDefaultOptions);
-  }
-
-  delete(object: any) {
-    return this.httpClient.delete(object.url, httpDefaultOptions);
   }
 
   filePost(data: FileInfo, type: string) {
@@ -114,9 +99,23 @@ export class ApiService {
     }
   }
 
-  fileInfoGet(url: string) {
+  fileGet(url: string) {
     return this.httpClient.get<FileInfo>(url, httpDefaultOptions);
   }
+
+  /*
+   * Infos
+   */
+
+  infoRevisionLatest() {
+    return this.httpClient.get<number>(this.infoRevisionLatestUrl);
+  }
+
+  infoLoadAvg() {
+    return this.httpClient.get<string>(this.infoLoadAvgUrl);
+  }
+
+  // TODO: will be remove when only one request is made for all the data
 
   addRevisionInfo(instance) {
     if (typeof instance.revision === 'string') {
@@ -128,7 +127,7 @@ export class ApiService {
 
   addPakInfo(instance) {
     if (typeof instance.pak === 'string') {
-      this.fileInfoGet(instance.pak).subscribe(pak => {
+      this.fileGet(instance.pak).subscribe(pak => {
         instance.pak = pak;
       });
     }
@@ -136,18 +135,10 @@ export class ApiService {
 
   addSaveInfo(instance) {
     if (typeof instance.savegame === 'string') {
-      this.fileInfoGet(instance.savegame).subscribe(savegame => {
+      this.fileGet(instance.savegame).subscribe(savegame => {
         instance.savegame = savegame;
       });
     }
-  }
-
-  infoRevisionLatest() {
-    return this.httpClient.get<number>(this.infoRevisionLatestUrl);
-  }
-
-  infoLoadAvg() {
-    return this.httpClient.get<string>(this.infoLoadAvgUrl);
   }
 }
 

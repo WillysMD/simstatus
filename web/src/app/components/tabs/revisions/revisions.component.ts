@@ -103,7 +103,7 @@ export class RevisionsComponent implements OnInit {
       if (answer) {
         // Switch to spinner mode while the revision is being deleted
         this.revisions[i].status = RevisionStatusCode.BUIDLING;
-        this._apiService.revisionsDelete(this.revisions[i]).subscribe({
+        this._apiService.delete(this.revisions[i]).subscribe({
           error: err => this._errorSnack.open(err.message, ERROR_SNACK_ACTION, ERROR_SNACK_CONFIG),
           complete: () => this.revisions.splice(i, 1)
         });

@@ -85,11 +85,6 @@ export class InstancesComponent implements OnInit {
     this.list();
   }
 
-  /**
-   * Send a request to install an instance
-   * Show spinner while waiting for response
-   * @param i - Instance array id
-   */
   install(i: number) {
     this.instances[i].status = InstanceStatusCode.BUILDING;
     this._apiService.instanceInstall(this.instances[i]).subscribe({
@@ -101,11 +96,6 @@ export class InstancesComponent implements OnInit {
     });
   }
 
-  /**
-   * Send a request to start an instance
-   * Show spinner while waiting for response
-   * @param i - Instance array id
-   */
   start(i: number) {
     this.instances[i].status = InstanceStatusCode.BUILDING;
     this._apiService.instanceStart(this.instances[i]).subscribe({
@@ -170,7 +160,7 @@ export class InstancesComponent implements OnInit {
         this.getRelatedInfos(this.instances[i]);
 
         // Send the changes to the server
-        this._apiService.instancePut(data).subscribe({
+        this._apiService.put(data).subscribe({
           error: err => this._errorSnack.open(err.message, ERROR_SNACK_ACTION, ERROR_SNACK_CONFIG),
           next: (response) => {
             this.instances[i] = response;
@@ -194,7 +184,7 @@ export class InstancesComponent implements OnInit {
         instance.status = InstanceStatusCode.BUILDING;
 
         // Send a delete request to the server
-        this._apiService.instanceDelete(instance).subscribe({
+        this._apiService.delete(instance).subscribe({
           error: err => this._errorSnack.open(err.message, ERROR_SNACK_ACTION, ERROR_SNACK_CONFIG),
           complete: () => this.instances.splice(this.instances.indexOf(instance), 1)
         });
