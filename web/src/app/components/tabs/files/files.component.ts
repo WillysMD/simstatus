@@ -1,33 +1,39 @@
 import {Component, OnInit} from '@angular/core';
+import {ActivatedRoute} from '@angular/router';
 import {ApiService, FileInfo, sortFileInfo} from '../../../api.service';
-import {MatDialog, MatSnackBar} from '@angular/material';
+import {MatDialog} from '@angular/material';
 import {FileEditDialogComponent} from '../../dialogs/file-edit-dialog/file-edit-dialog.component';
 import {ConfirmDialogComponent} from '../../dialogs/confirm-dialog/confirm-dialog.component';
 
-const ERROR_SNACK_ACTION = 'OK';
-const ERROR_SNACK_CONFIG = {
-  duration: 5000
-};
-
 @Component({
-  selector: 'app-paks',
-  templateUrl: './paks.component.html',
-  styleUrls: ['./paks.component.sass']
+  selector: 'app-files',
+  templateUrl: './files.component.html',
+  styleUrls: ['./files.component.sass']
 })
-export class PaksComponent implements OnInit {
+export class FilesComponent implements OnInit {
 
-  title: 'Pak';
   files: FileInfo[];
 
-  constructor(private _apiService: ApiService,
+  constructor(private _activatedRoute: ActivatedRoute,
+              private _apiService: ApiService,
               private _editDialog: MatDialog,
-              private _confirmDialog: MatDialog,
-              private _errorSnack: MatSnackBar) {
+              private _confirmDialog: MatDialog) {
+  }
+
+  get type() {
+    return this._activatedRoute.snapshot.data.fileType;
+  }
+
+  get title() {
+    if (this.type === 'pak') {
+      return 'Pak';
+    } else if (this.type === 'save') {
+      return 'Save';
+    }
   }
 
   private list() {
     this._apiService.paksList().subscribe({
-      error: err => this._errorSnack.open(err.message, ERROR_SNACK_ACTION, ERROR_SNACK_CONFIG),
       next: paks => this.files = paks,
       complete: () => this.sort()
     });
@@ -43,9 +49,8 @@ export class PaksComponent implements OnInit {
     });
     createDialogRef.afterClosed().subscribe(data => {
       if (data) {
-        this._apiService.pakPost(data).subscribe({
-          error: err => this._errorSnack.open(err.message, ERROR_SNACK_ACTION, ERROR_SNACK_CONFIG),
-          next: (pak) => this.files.push(pak),
+        this._apiService.filePost(data, this.type).subscribe({
+          next: (file) => this.files.push(file),
           complete: () => this.sort()
         });
       }
@@ -56,8 +61,7 @@ export class PaksComponent implements OnInit {
     const confirmDialogRef = this._confirmDialog.open(ConfirmDialogComponent, {data: prompt});
     confirmDialogRef.afterClosed().subscribe((answer) => {
       if (answer) {
-        this._apiService.pakDelete(this.files[i]).subscribe({
-          error: err => this._errorSnack.open(err.message, ERROR_SNACK_ACTION, ERROR_SNACK_CONFIG),
+        this._apiService.delete(this.files[i]).subscribe({
           complete: () => this.files.splice(i, 1)
         });
       }

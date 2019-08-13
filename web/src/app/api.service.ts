@@ -22,6 +22,10 @@ export class ApiService {
   constructor(private httpClient: HttpClient) {
   }
 
+  /*
+   * Instances
+   */
+
   instancesList() {
     return this.httpClient.get<Instance[]>(this.instancesUrl, httpDefaultOptions);
   }
@@ -50,6 +54,10 @@ export class ApiService {
     return this.httpClient.get<Instance>(instance.url + 'stop/', httpDefaultOptions);
   }
 
+  /*
+   * Revisions
+   */
+
   revisionsList() {
     return this.httpClient.get<Revision[]>(this.revisionsUrl, httpDefaultOptions);
   }
@@ -70,30 +78,40 @@ export class ApiService {
     return this.httpClient.get<Revision>(url + 'build/', httpDefaultOptions);
   }
 
+  /*
+   * Paks
+   */
+
   paksList() {
     return this.httpClient.get<FileInfo[]>(this.paksUrl, httpDefaultOptions);
   }
 
-  pakPost(pakData: FormData) {
-    // Not a JSON request
-    return this.httpClient.post<FileInfo>(this.paksUrl, pakData);
-  }
-
-  pakDelete(pak: FileInfo) {
-    return this.httpClient.delete(pak.url, httpDefaultOptions);
-  }
+  /*
+   * Saves
+   */
 
   savesList() {
     return this.httpClient.get<FileInfo[]>(this.savesUrl, httpDefaultOptions);
   }
 
-  savePost(saveData: FormData) {
-    // Not a JSON request
-    return this.httpClient.post<FileInfo>(this.savesUrl, saveData);
+  /*
+   * Generics
+   */
+
+  put(object: any) {
+    return this.httpClient.put<any>(object.url, object, httpDefaultOptions);
   }
 
-  saveDelete(save: FileInfo) {
-    return this.httpClient.delete(save.url, httpDefaultOptions);
+  delete(object: any) {
+    return this.httpClient.delete(object.url, httpDefaultOptions);
+  }
+
+  filePost(data: FileInfo, type: string) {
+    if (type === 'pak') {
+      return this.httpClient.post<FileInfo>(this.paksUrl, data);
+    } else if (type === 'save') {
+      return this.httpClient.post<FileInfo>(this.savesUrl, data);
+    }
   }
 
   fileInfoGet(url: string) {
@@ -178,18 +196,10 @@ export interface FileInfo {
 }
 
 export function sortFileInfo(a: FileInfo, b: FileInfo) {
-  if (a.name < b.name) {
-    return -1;
-  } else if (a.name > b.name) {
-    return 1;
+  if (a.name !== b.name) {
+    return (a.name < b.name) ? -1 : 1;
   } else {
-    if (a.version < b.version) {
-      return 1;
-    } else if (a.version > b.version) {
-      return -1;
-    } else {
-      return 0;
-    }
+    return (a.version < b.version) ? -1 : 1;
   }
 }
 

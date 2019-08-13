@@ -1,6 +1,6 @@
 <mat-list>
   <mat-list-item class="header">
-    <span class="name">Name</span>
+    <span class="name">{{title}}</span>
     <span class="version">Version</span>
     <span class="file">File</span>
     <mat-divider></mat-divider>
@@ -23,5 +23,5 @@
 
 <button (click)="openCreateDialog()" mat-button class="add-button">
   <mat-icon>add</mat-icon>
-  File
+  {{title}}
 </button>
