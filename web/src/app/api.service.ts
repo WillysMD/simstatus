@@ -83,12 +83,12 @@ export class ApiService {
    * Files
    */
 
-  paksList() {
-    return this.httpClient.get<FileInfo[]>(this.paksUrl, httpDefaultOptions);
-  }
-
-  savesList() {
-    return this.httpClient.get<FileInfo[]>(this.savesUrl, httpDefaultOptions);
+  filesList(type: string) {
+    if (type === 'pak') {
+      return this.httpClient.get<FileInfo[]>(this.paksUrl, httpDefaultOptions);
+    } else if (type === 'save') {
+      return this.httpClient.get<FileInfo[]>(this.savesUrl, httpDefaultOptions);
+    }
   }
 
   filePost(data: FileInfo, type: string) {

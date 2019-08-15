@@ -101,11 +101,11 @@ export class InstanceEditDialogComponent {
   }
 
   private paksList() {
-    this._apiService.paksList().subscribe(paks => this.paks = paks);
+    this._apiService.filesList('pak').subscribe(paks => this.paks = paks);
   }
 
   private savesList() {
-    this._apiService.savesList().subscribe(saves => this.saves = saves);
+    this._apiService.filesList('save').subscribe(saves => this.saves = saves);
   }
 
   get nameControl() {
@@ -153,7 +153,7 @@ export class InstanceEditDialogComponent {
     });
     createPakDialogRef.afterClosed().subscribe(data => {
       if (data != null) {
-        this._apiService.pakPost(data).subscribe({
+        this._apiService.filePost(data, 'pak').subscribe({
           error: err => this._errorSnack.open(err.message, ERROR_SNACK_ACTION, ERROR_SNACK_CONFIG),
           complete: () => this.paksList()
         });
@@ -167,7 +167,7 @@ export class InstanceEditDialogComponent {
     });
     createSaveDialogRef.afterClosed().subscribe(data => {
       if (data != null) {
-        this._apiService.savePost(data).subscribe({
+        this._apiService.filePost(data, 'save').subscribe({
           error: err => this._errorSnack.open(err.message, ERROR_SNACK_ACTION, ERROR_SNACK_CONFIG),
           complete: () => this.savesList()
         });

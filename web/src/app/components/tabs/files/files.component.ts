@@ -33,7 +33,7 @@ export class FilesComponent implements OnInit {
   }
 
   private list() {
-    this._apiService.paksList().subscribe({
+    this._apiService.filesList(this.type).subscribe({
       next: paks => this.files = paks,
       complete: () => this.sort()
     });
