@@ -149,7 +149,7 @@ class LocalInstance:
         except psutil.NoSuchProcess:
             return None
         else:
-            if process.status() == psutil.STATUS_RUNNING:
+            if process.is_running() and process.status != psutil.STATUS_ZOMBIE:
                 return self._pid
             else:
                 return None
@@ -242,7 +242,10 @@ class LocalInstance:
                    '-objects', self.pak_name, '-load', self.savegame_name]
             sim = Popen(cmd)
             self._pid = sim.pid
-        return self._pid
+            # Wait for the server to start
+            time.sleep(3)
+            return sim.pid
+        return None
 
     def stop(self):
         """Stop the server"""
