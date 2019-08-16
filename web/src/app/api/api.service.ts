@@ -102,10 +102,6 @@ export class ApiService {
     }
   }
 
-  fileGet(url: string) {
-    return this.httpClient.get<FileInfo>(url, httpDefaultOptions);
-  }
-
   /*
    * Infos
    */
