@@ -16,9 +16,9 @@ export class AppComponent implements OnInit {
   activatedComponent: any;
   refreshButton: boolean;
 
-  constructor(private _router: Router,
-              private _activatedRoute: ActivatedRoute,
-              private _titleService: Title) {
+  constructor(private router: Router,
+              private activatedRoute: ActivatedRoute,
+              private browserTitle: Title) {
   }
 
   onRouteActivate(component) {
@@ -31,9 +31,9 @@ export class AppComponent implements OnInit {
   }
 
   ngOnInit() {
-    this._router.events.pipe(
+    this.router.events.pipe(
       filter(event => event instanceof NavigationEnd),
-      map(() => this._activatedRoute),
+      map(() => this.activatedRoute),
       map((route) => {
         while (route.firstChild) {
           route = route.firstChild;
@@ -43,7 +43,7 @@ export class AppComponent implements OnInit {
       filter((route) => route.outlet === 'primary'),
       mergeMap((route) => route.data)
     ).subscribe((data) => {
-      this._titleService.setTitle(BASE_TITLE + ' - ' + data.title);
+      this.browserTitle.setTitle(BASE_TITLE + ' - ' + data.title);
     });
   }
 }

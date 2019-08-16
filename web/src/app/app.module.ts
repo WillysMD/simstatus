@@ -22,7 +22,6 @@ import {FileEditDialogComponent} from './components/dialogs/file-edit-dialog/fil
 import {RevisionsComponent} from './components/tabs/revisions/revisions.component';
 import {RevisionEditDialogComponent} from './components/dialogs/revision-edit-dialog/revision-edit-dialog.component';
 import {StatusBarComponent} from './components/ui/status-bar/status-bar.component';
-import {FormInputFieldComponent} from './components/utils/form-input-field/form-input-field.component';
 import {FilesComponent} from './components/tabs/files/files.component';
 
 @NgModule({
@@ -36,7 +35,6 @@ import {FilesComponent} from './components/tabs/files/files.component';
     RevisionsComponent,
     RevisionEditDialogComponent,
     StatusBarComponent,
-    FormInputFieldComponent,
     FilesComponent,
   ],
   entryComponents: [

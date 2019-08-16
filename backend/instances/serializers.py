@@ -21,6 +21,16 @@ class PakSerializer(ProtectedSerializer):
         fields = '__all__'
 
 
+class PakNestedSerializer(PakSerializer):
+    id = serializers.IntegerField()
+    file = serializers.CharField()
+
+    class Meta:
+        model = Pak
+        fields = '__all__'
+        validators = []
+
+
 class SaveSerializer(ProtectedSerializer):
     id = serializers.IntegerField(read_only=True)
 
@@ -29,7 +39,18 @@ class SaveSerializer(ProtectedSerializer):
         fields = '__all__'
 
 
+class SaveNestedSerializer(SaveSerializer):
+    id = serializers.IntegerField()
+    file = serializers.CharField()
+
+    class Meta:
+        model = Save
+        fields = '__all__'
+        validators = []
+
+
 class RevisionSerializer(ProtectedSerializer):
+    id = serializers.IntegerField(read_only=True)
     status = serializers.SerializerMethodField()
 
     class Meta:
@@ -41,7 +62,15 @@ class RevisionSerializer(ProtectedSerializer):
         return local_revision.status
 
 
-class InstanceSerializer(serializers.HyperlinkedModelSerializer):
+class RevisionNestedSerializer(RevisionSerializer):
+    id = serializers.IntegerField()
+    r = serializers.IntegerField()
+
+
+class InstanceSerializer(serializers.ModelSerializer):
+    revision = RevisionNestedSerializer()
+    pak = PakNestedSerializer()
+    savegame = SaveNestedSerializer()
     status = serializers.SerializerMethodField()
 
     class Meta:
@@ -51,3 +80,17 @@ class InstanceSerializer(serializers.HyperlinkedModelSerializer):
     def get_status(self, instance):
         local_instance = LocalInstance(instance)
         return local_instance.status
+
+    def create(self, validated_data):
+        revision = Revision.objects.get(id=validated_data.pop('revision')['id'])
+        pak = Pak.objects.get(id=validated_data.pop('pak')['id'])
+        savegame = Save.objects.get(id=validated_data.pop('savegame')['id'])
+
+        return Instance.objects.create(**validated_data, revision=revision, pak=pak, savegame=savegame)
+
+    def update(self, instance, validated_data):
+        instance.revision = Revision.objects.get(id=validated_data.pop('revision')['id'])
+        instance.pak = Pak.objects.get(id=validated_data.pop('pak')['id'])
+        instance.savegame = Save.objects.get(id=validated_data.pop('savegame')['id'])
+
+        return super(InstanceSerializer, self).update(instance, validated_data)

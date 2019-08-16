@@ -1,5 +1,8 @@
 import {Injectable} from '@angular/core';
 import {HttpClient, HttpHeaders} from '@angular/common/http';
+import {Instance} from './instance.model';
+import {Revision} from './revision.model';
+import {FileInfo} from './file-info.model';
 
 const httpDefaultOptions = {
   headers: new HttpHeaders({
@@ -28,7 +31,7 @@ export class ApiService {
    */
 
   put(object: any) {
-    return this.httpClient.put<any>(object.url, object, httpDefaultOptions);
+    return this.httpClient.patch<any>(object.url, object, httpDefaultOptions);
   }
 
   delete(object: any) {
@@ -114,86 +117,4 @@ export class ApiService {
   infoLoadAvg() {
     return this.httpClient.get<string>(this.infoLoadAvgUrl);
   }
-
-  // TODO: will be remove when only one request is made for all the data
-
-  addRevisionInfo(instance) {
-    if (typeof instance.revision === 'string') {
-      this.revisionGet(instance.revision).subscribe(revision => {
-        instance.revision = revision;
-      });
-    }
-  }
-
-  addPakInfo(instance) {
-    if (typeof instance.pak === 'string') {
-      this.fileGet(instance.pak).subscribe(pak => {
-        instance.pak = pak;
-      });
-    }
-  }
-
-  addSaveInfo(instance) {
-    if (typeof instance.savegame === 'string') {
-      this.fileGet(instance.savegame).subscribe(savegame => {
-        instance.savegame = savegame;
-      });
-    }
-  }
-}
-
-export interface Instance {
-  url: string;
-  name: string;
-  port: number;
-  revision: string | Revision;
-  lang: string;
-  debug: number;
-  pak: string | FileInfo;
-  savegame: string | FileInfo;
-  status: number;
-}
-
-export enum InstanceStatusCode {
-  RUNNING = 0,
-  READY = 1,
-  BUILDING = 2,
-  CREATED = 3,
-}
-
-export interface Revision {
-  url: string;
-  r: number;
-  alias: string;
-  status: number;
-  protected: boolean;
-}
-
-export enum RevisionStatusCode {
-  READY = 0,
-  BUIDLING = 1,
-  INSTALL_ERROR = 2,
-  COMPILE_ERROR = 3,
-  CLONE_ERROR = 4,
-}
-
-export interface FileInfo {
-  id: string;
-  url: string;
-  name: string;
-  version: string;
-  protected: boolean;
-  file?: File;
-}
-
-export function sortFileInfo(a: FileInfo, b: FileInfo) {
-  if (a.name !== b.name) {
-    return (a.name < b.name) ? -1 : 1;
-  } else {
-    return (a.version < b.version) ? -1 : 1;
-  }
-}
-
-export function errorMessage(err) {
-  return 'HTTP ' + err.status + ' ' + err.statusText + ' : ' + err.error;
 }

@@ -3,6 +3,7 @@ from rest_framework import viewsets
 from rest_framework.views import APIView
 from rest_framework.generics import RetrieveAPIView
 from rest_framework.response import Response
+from rest_framework.decorators import action
 from .serializers import PakSerializer, SaveSerializer, RevisionSerializer, InstanceSerializer
 from .models import Pak, Save, Revision, Instance
 from .local import REPOSITORY_URL, LocalRevision, LocalInstance
@@ -43,9 +44,25 @@ class InstanceViewSet(viewsets.ModelViewSet):
     serializer_class = InstanceSerializer
     queryset = Instance.objects.all()
 
+    def get_local_instance(self):
+        return LocalInstance(self.get_object())
+
+    @action(detail=True, methods=['get'])
+    def start(self, request):
+        local_instance = self.get_local_instance()
+        pid = local_instance.start()
+
+        if pid is not None:
+            instance = self.get_object()
+            instance.pid = pid
+            instance.save()
+
+        return self.detail(self, request)
+
     def update(self, request, *args, **kwargs):
         local_instance = LocalInstance(self.get_object())
         local_instance.rename(request.data['name'])
+
         return super(InstanceViewSet, self).update(request, *args, **kwargs)
 
 

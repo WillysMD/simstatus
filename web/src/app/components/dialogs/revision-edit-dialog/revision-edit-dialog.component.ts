@@ -1,8 +1,9 @@
 import {Component, Inject, OnInit} from '@angular/core';
 import {MAT_DIALOG_DATA, MatDialog, MatDialogRef} from '@angular/material';
 import {AbstractControl, FormControl, FormGroup, ValidatorFn, Validators} from '@angular/forms';
-import {ApiService, Revision} from '../../../api.service';
+import {ApiService} from '../../../api/api.service';
 import {ConfirmDialogComponent} from '../confirm-dialog/confirm-dialog.component';
+import {Revision} from '../../../api/revision.model';
 
 export interface RevisionData {
   revision: Revision;

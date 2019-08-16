@@ -1,8 +1,8 @@
 import {Component, Inject} from '@angular/core';
 import {MAT_DIALOG_DATA, MatDialog, MatDialogRef} from '@angular/material';
 import {FormControl, FormGroup, Validators} from '@angular/forms';
-import {FileInfo} from '../../../api.service';
 import {ConfirmDialogComponent} from '../confirm-dialog/confirm-dialog.component';
+import {FileInfo} from '../../../api/file-info.model';
 
 interface FileDialogData {
   file: FileInfo;

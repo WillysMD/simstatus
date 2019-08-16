@@ -1,9 +1,10 @@
 import {Component, OnInit} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
-import {ApiService, FileInfo, sortFileInfo} from '../../../api.service';
+import {ApiService} from '../../../api/api.service';
 import {MatDialog} from '@angular/material';
 import {FileEditDialogComponent} from '../../dialogs/file-edit-dialog/file-edit-dialog.component';
 import {ConfirmDialogComponent} from '../../dialogs/confirm-dialog/confirm-dialog.component';
+import {FileInfo} from '../../../api/file-info.model';
 
 @Component({
   selector: 'app-files',
@@ -35,12 +36,8 @@ export class FilesComponent implements OnInit {
   private list() {
     this._apiService.filesList(this.type).subscribe({
       next: paks => this.files = paks,
-      complete: () => this.sort()
+      complete: () => this.files.sort()
     });
-  }
-
-  sort() {
-    this.files.sort(sortFileInfo);
   }
 
   openCreateDialog() {
@@ -51,7 +48,7 @@ export class FilesComponent implements OnInit {
       if (data) {
         this._apiService.filePost(data, this.type).subscribe({
           next: (file) => this.files.push(file),
-          complete: () => this.sort()
+          complete: () => this.files.sort()
         });
       }
     });
