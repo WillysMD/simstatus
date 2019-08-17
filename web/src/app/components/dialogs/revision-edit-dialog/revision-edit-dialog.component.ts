@@ -37,6 +37,10 @@ export class RevisionEditDialogComponent implements OnInit {
               private apiService: ApiService) {
   }
 
+  public get rControl(): AbstractControl {
+    return this.revisionForm.get('r');
+  }
+
   public closeConfirm(prompt: string): void {
     if (this.edited) {
       // If the content has been edited, open a confirm dialog before closing
@@ -64,7 +68,11 @@ export class RevisionEditDialogComponent implements OnInit {
 
     if (this.latestRevision === undefined) {
       this.apiService.infoRevisionLatest().subscribe({
-        next: latestRevision => this.latestRevision = latestRevision
+        next: latestRevision => {
+          this.latestRevision = latestRevision;
+          this.rControl.setValidators([Validators.max(this.latestRevision)]);
+          this.rControl.updateValueAndValidity();
+        }
       });
     }
   }

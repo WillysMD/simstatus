@@ -6,7 +6,20 @@
       <mat-form-field>
         <mat-label>Revision</mat-label>
         <input matInput formControlName="r" type="number" [max]="latestRevision">
+        <mat-hint *ngIf="!latestRevision">Checking latest revision...</mat-hint>
         <mat-hint *ngIf="latestRevision">Latest revision is {{latestRevision}}</mat-hint>
+        <mat-error
+          *ngIf="rControl.invalid && rControl.errors.revisionNotUnique">
+          Revision already exists
+        </mat-error>
+        <mat-error
+          *ngIf="rControl.invalid && rControl.errors.min">
+          Revision is too old
+        </mat-error>
+        <mat-error
+          *ngIf="rControl.invalid && rControl.errors.max">
+          Revision doesn't exist yet
+        </mat-error>
       </mat-form-field>
     </div>
 
@@ -14,6 +27,11 @@
       <mat-form-field>
         <mat-label>Stable version (optional)</mat-label>
         <input matInput formControlName="alias" type="text">
+        <mat-hint>Stable version nubmer</mat-hint>
+        <mat-error
+          *ngIf="rControl.invalid && rControl.errors.min">
+          Invalid format
+        </mat-error>
       </mat-form-field>
     </div>
   </form>
