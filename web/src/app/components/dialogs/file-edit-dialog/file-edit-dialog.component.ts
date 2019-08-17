@@ -17,7 +17,8 @@ interface FileDialogData {
 export class FileEditDialogComponent {
 
   private edited = false;
-  fileForm = new FormGroup({
+  private file: File;
+  public fileForm = new FormGroup({
     name: new FormControl(this.data.file.name, [
       Validators.required,
       Validators.pattern('[a-zA-Z0-9\-_]+')
@@ -27,7 +28,6 @@ export class FileEditDialogComponent {
       Validators.pattern('[0-9](\.[0-9]+){0,2}[a-z]?')
     ]),
   });
-  private file: File;
 
   constructor(public dialogRef: MatDialogRef<FileEditDialogComponent>,
               @Inject(MAT_DIALOG_DATA) public data: FileDialogData,
@@ -38,21 +38,21 @@ export class FileEditDialogComponent {
     });
   }
 
-  onFileChange(files: FileList) {
+  public onFileChange(files: FileList): void {
     this.file = files[0];
   }
 
   /**
    * Check if form is valid and a file was added
    */
-  isValid() {
+  public isValid(): boolean {
     return this.file != null && this.fileForm.valid;
   }
 
   /**
    * Check for edits and close the dialog
    */
-  closeConfirm(prompt: string) {
+  public closeConfirm(prompt: string): void {
     if (this.edited) {
       // If the content has been edited, open a confirm dialog before closing
       const confirmDialogRef = this.confirmDialog.open(ConfirmDialogComponent, {data: prompt});
@@ -70,7 +70,7 @@ export class FileEditDialogComponent {
   /**
    * Add the file and text fields to a FormData object and close
    */
-  save() {
+  public save(): void {
     const fileData = new FormData();
     fileData.append('name', this.fileForm.value.name);
     fileData.append('version', this.fileForm.value.version);
