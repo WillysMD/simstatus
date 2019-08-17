@@ -4,8 +4,8 @@ import {FileInfo} from './file-info.model';
 export class Instance {
   name: string;
   port: number;
-  lang: string;
-  debug: number;
+  lang = 'en';
+  debug = 2;
   revision: Revision;
   pak: FileInfo;
   savegame: FileInfo;

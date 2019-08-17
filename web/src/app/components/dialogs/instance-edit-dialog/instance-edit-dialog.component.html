@@ -36,9 +36,6 @@
           </mat-option>
         </mat-select>
       </mat-form-field>
-      <button (click)="openNewRevisionDialog()" mat-icon-button aria-label="Add revision">
-        <mat-icon>add</mat-icon>
-      </button>
     </div>
 
     <div>
@@ -91,7 +88,7 @@
           <mat-option *ngFor="let pak of paks" [value]="pak.id">{{pak.name}}-{{pak.version}}</mat-option>
         </mat-select>
       </mat-form-field>
-      <button (click)="openNewPakDialog()" mat-icon-button aria-label="Add pak">
+      <button (click)="openNewFileDialog('pak')" mat-icon-button aria-label="Add pak">
         <mat-icon>add</mat-icon>
       </button>
     </div>
@@ -103,7 +100,7 @@
           <mat-option *ngFor="let save of saves" [value]="save.id">{{save.name}}-{{save.version}}</mat-option>
         </mat-select>
       </mat-form-field>
-      <button (click)="openNewSaveDialog()" mat-icon-button aria-label="Add save">
+      <button (click)="openNewFileDialog('save')" mat-icon-button aria-label="Add save">
         <mat-icon>add</mat-icon>
       </button>
     </div>
@@ -114,4 +111,3 @@
   <button (click)="save()" [disabled]="!instanceForm.valid" mat-button color="primary">Save</button>
   <button (click)="closeConfirm('Are you sure want to discard your changes?')" mat-button>Cancel</button>
 </mat-dialog-actions>
-

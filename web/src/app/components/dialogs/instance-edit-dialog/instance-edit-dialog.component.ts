@@ -4,7 +4,6 @@ import {ApiService} from '../../../api/api.service';
 import {ConfirmDialogComponent} from '../confirm-dialog/confirm-dialog.component';
 import {AbstractControl, FormControl, FormGroup, ValidatorFn, Validators} from '@angular/forms';
 import {FileEditDialogComponent} from '../file-edit-dialog/file-edit-dialog.component';
-import {RevisionEditDialogComponent} from '../revision-edit-dialog/revision-edit-dialog.component';
 import {Instance} from '../../../api/instance.model';
 import {Revision} from '../../../api/revision.model';
 import {Pak} from '../../../api/pak.model';
@@ -65,17 +64,16 @@ export class InstanceEditDialogComponent implements OnInit {
               @Inject(MAT_DIALOG_DATA) public data: InstanceDialogData,
               private apiService: ApiService,
               private confirmDialog: MatDialog,
-              private newRevisionDialog: MatDialog,
               private newFileDialog: MatDialog,
               private createPakDialog: MatDialog,
               private createSaveDialog: MatDialog) {
   }
 
-  get nameControl() {
+  public get nameControl(): AbstractControl {
     return this.instanceForm.get('name');
   }
 
-  get portControl() {
+  public get portControl(): AbstractControl {
     return this.instanceForm.get('port');
   }
 
@@ -96,40 +94,37 @@ export class InstanceEditDialogComponent implements OnInit {
     }
   }
 
-  public openNewRevisionDialog(): void {
-    const createRevisionDialog = this.newRevisionDialog.open(RevisionEditDialogComponent, {
-      data: {revision: new Revision(), list: this.revisions}
-    });
-    createRevisionDialog.afterClosed().subscribe(data => {
-      if (data != null) {
-        this.apiService.revisionsPost(data).subscribe({
-          complete: () => 0
-        });
-      }
-    });
-  }
+  public openNewFileDialog(type: string): void {
+    let newFile: FileInfo;
+    let fileList: FileInfo[];
 
-  openNewPakDialog() {
-    const createPakDialogRef = this.createPakDialog.open(FileEditDialogComponent, {
-      data: {file: new Pak(), list: this.paks}
+    if (type === 'pak') {
+      newFile = new Pak();
+      fileList = this.paks;
+    } else if (type === 'save') {
+      newFile = new Save();
+      fileList = this.saves;
+    } else {
+      return;
+    }
+    const newFileDialogRef = this.newFileDialog.open(FileEditDialogComponent, {
+      data: {file: newFile, list: fileList}
     });
-    createPakDialogRef.afterClosed().subscribe(data => {
-      if (data != null) {
-        this.apiService.filePost(data, 'pak').subscribe({
-          complete: () => 0
-        });
-      }
-    });
-  }
-
-  openNewSaveDialog() {
-    const createSaveDialogRef = this.createSaveDialog.open(FileEditDialogComponent, {
-      data: {file: new Save(), list: this.saves},
-    });
-    createSaveDialogRef.afterClosed().subscribe(data => {
-      if (data != null) {
-        this.apiService.filePost(data, 'save').subscribe({
-          complete: () => 0
+    newFileDialogRef.afterClosed().subscribe(data => {
+      if (data) {
+        this.apiService.filePost(data, type).subscribe({
+          next: response => {
+            fileList.push(response);
+            if (type === 'pak') {
+              this.instanceForm.patchValue({
+                pak: response.id
+              });
+            } else if (type === 'save') {
+              this.instanceForm.patchValue({
+                savegame: response.id
+              });
+            }
+          }
         });
       }
     });

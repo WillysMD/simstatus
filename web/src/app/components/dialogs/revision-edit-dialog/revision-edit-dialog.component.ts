@@ -5,7 +5,7 @@ import {ApiService} from '../../../api/api.service';
 import {ConfirmDialogComponent} from '../confirm-dialog/confirm-dialog.component';
 import {Revision} from '../../../api/revision.model';
 
-export interface RevisionData {
+interface RevisionData {
   revision: Revision;
   list: Revision[];
 }
