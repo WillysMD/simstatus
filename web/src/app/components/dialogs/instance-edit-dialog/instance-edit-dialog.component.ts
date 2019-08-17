@@ -24,6 +24,8 @@ interface InstanceDialogData {
 })
 export class InstanceEditDialogComponent implements OnInit {
 
+  private edited = false;
+
   public revisions: Revision[];
   public paks: Pak[];
   public saves: Save[];
@@ -59,8 +61,6 @@ export class InstanceEditDialogComponent implements OnInit {
     url: new FormControl(this.data.edit.url)
   });
 
-  private edited = false;
-
   constructor(public dialogRef: MatDialogRef<InstanceEditDialogComponent>,
               @Inject(MAT_DIALOG_DATA) public data: InstanceDialogData,
               private apiService: ApiService,
@@ -79,13 +79,13 @@ export class InstanceEditDialogComponent implements OnInit {
     return this.instanceForm.get('port');
   }
 
-  closeConfirm(prompt: string) {
+  public closeConfirm(prompt: string): void {
     if (this.edited) {
       // If the content has been edited, open a confirm dialog before closing
       const confirmDialogRef = this.confirmDialog.open(ConfirmDialogComponent, {
         data: prompt,
       });
-      confirmDialogRef.afterClosed().subscribe((answer) => {
+      confirmDialogRef.afterClosed().subscribe(answer => {
         if (answer) {
           this.dialogRef.close();
         }
@@ -96,7 +96,7 @@ export class InstanceEditDialogComponent implements OnInit {
     }
   }
 
-  openNewRevisionDialog() {
+  public openNewRevisionDialog(): void {
     const createRevisionDialog = this.newRevisionDialog.open(RevisionEditDialogComponent, {
       data: {revision: new Revision(), list: this.revisions}
     });

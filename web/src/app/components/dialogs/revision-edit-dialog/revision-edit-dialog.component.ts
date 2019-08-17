@@ -18,8 +18,9 @@ export interface RevisionData {
 export class RevisionEditDialogComponent implements OnInit {
 
   private edited = false;
-  latestRevision: number;
-  revisionForm = new FormGroup({
+
+  public latestRevision: number;
+  public revisionForm = new FormGroup({
     r: new FormControl(this.data.revision.r, [
       Validators.required,
       Validators.min(8503),
@@ -33,21 +34,14 @@ export class RevisionEditDialogComponent implements OnInit {
   constructor(public dialogRef: MatDialogRef<RevisionEditDialogComponent>,
               @Inject(MAT_DIALOG_DATA) public data: RevisionData,
               private confirmDialog: MatDialog,
-              private _apiService: ApiService) {
-    this.revisionForm.valueChanges.subscribe(() => {
-      this.edited = true;
-      this.dialogRef.disableClose = true;
-    });
+              private apiService: ApiService) {
   }
 
-  /**
-   * Check for edits and close the dialog
-   */
-  closeConfirm(prompt: string) {
+  public closeConfirm(prompt: string): void {
     if (this.edited) {
       // If the content has been edited, open a confirm dialog before closing
       const confirmDialogRef = this.confirmDialog.open(ConfirmDialogComponent, {data: prompt});
-      confirmDialogRef.afterClosed().subscribe((answer) => {
+      confirmDialogRef.afterClosed().subscribe(answer => {
         if (answer) {
           this.dialogRef.close();
         }
@@ -58,13 +52,18 @@ export class RevisionEditDialogComponent implements OnInit {
     }
   }
 
-  save() {
+  public save(): void {
     this.dialogRef.close(this.revisionForm.value);
   }
 
-  ngOnInit() {
+  public ngOnInit(): void {
+    this.revisionForm.valueChanges.subscribe(() => {
+      this.edited = true;
+      this.dialogRef.disableClose = true;
+    });
+
     if (this.latestRevision === undefined) {
-      this._apiService.infoRevisionLatest().subscribe({
+      this.apiService.infoRevisionLatest().subscribe({
         next: latestRevision => this.latestRevision = latestRevision
       });
     }
