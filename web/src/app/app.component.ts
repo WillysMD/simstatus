@@ -3,7 +3,8 @@ import {Title} from '@angular/platform-browser';
 import {ActivatedRoute, NavigationEnd, Router} from '@angular/router';
 import {filter, map, mergeMap} from 'rxjs/operators';
 
-const BASE_TITLE = 'Simstatus';
+const APP_TITLE = 'Simstatus';
+const APP_VERSION = 'v1.0.0-beta1';
 
 @Component({
   selector: 'app-root',
@@ -11,26 +12,27 @@ const BASE_TITLE = 'Simstatus';
   styleUrls: ['./app.component.sass']
 })
 export class AppComponent implements OnInit {
-  title = 'simuhead-frontend';
 
-  activatedComponent: any;
-  refreshButton: boolean;
+  private activatedComponent: any;
+  public refreshButton: boolean;
+  public version = APP_VERSION;
+  public title = 'simuhead-frontend';
 
   constructor(private router: Router,
               private activatedRoute: ActivatedRoute,
               private browserTitle: Title) {
   }
 
-  onRouteActivate(component) {
+  public refresh(): void {
+    this.activatedComponent.refresh();
+  }
+
+  public onRouteActivate(component): void {
     this.activatedComponent = component;
     this.refreshButton = !!(component.refresh);
   }
 
-  refresh() {
-    this.activatedComponent.refresh();
-  }
-
-  ngOnInit() {
+  public ngOnInit(): void {
     this.router.events.pipe(
       filter(event => event instanceof NavigationEnd),
       map(() => this.activatedRoute),
@@ -43,7 +45,7 @@ export class AppComponent implements OnInit {
       filter((route) => route.outlet === 'primary'),
       mergeMap((route) => route.data)
     ).subscribe((data) => {
-      this.browserTitle.setTitle(BASE_TITLE + ' - ' + data.title);
+      this.browserTitle.setTitle(APP_TITLE + ' - ' + data.title);
     });
   }
 }

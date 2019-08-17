@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, Input, OnInit} from '@angular/core';
 import {ApiService} from '../../../api/api.service';
 
 @Component({
@@ -9,6 +9,7 @@ import {ApiService} from '../../../api/api.service';
 export class StatusBarComponent implements OnInit {
 
   public loadAvg: string;
+  @Input() version: string;
 
   constructor(private apiService: ApiService) {
   }
