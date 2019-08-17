@@ -82,7 +82,7 @@ export class InstancesComponent implements OnInit {
       data: {edit: new Instance(), list: this.instances}
     });
     dialogRef.afterClosed().subscribe(data => {
-      if (data != null) {
+      if (data) {
         // Set spinner mode while the server is installing
         data.status = InstanceStatusCode.WAITING;
         const newInstance = new Instance(data);
@@ -101,7 +101,7 @@ export class InstancesComponent implements OnInit {
       data: {edit: instance, list: this.instances}
     });
     dialogRef.afterClosed().subscribe(data => {
-      if (data != null) {
+      if (data) {
         // Switch to spinner mode while the server is installing
         data.status = InstanceStatusCode.WAITING;
         // Replace with edited instance

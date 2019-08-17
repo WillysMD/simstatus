@@ -5,6 +5,8 @@ import {MatDialog} from '@angular/material';
 import {FileEditDialogComponent} from '../../dialogs/file-edit-dialog/file-edit-dialog.component';
 import {ConfirmDialogComponent} from '../../dialogs/confirm-dialog/confirm-dialog.component';
 import {FileInfo} from '../../../api/file-info.model';
+import {Pak} from '../../../api/pak.model';
+import {Save} from '../../../api/save.model';
 
 @Component({
   selector: 'app-files',
@@ -13,59 +15,56 @@ import {FileInfo} from '../../../api/file-info.model';
 })
 export class FilesComponent implements OnInit {
 
-  files: FileInfo[];
+  public files: FileInfo[];
 
-  constructor(private _activatedRoute: ActivatedRoute,
-              private _apiService: ApiService,
-              private _editDialog: MatDialog,
-              private _confirmDialog: MatDialog) {
+  constructor(private activatedRoute: ActivatedRoute,
+              private apiService: ApiService,
+              private editDialog: MatDialog,
+              private confirmDialog: MatDialog) {
   }
 
-  get type() {
-    return this._activatedRoute.snapshot.data.fileType;
+  public get type(): string {
+    return this.activatedRoute.snapshot.data.fileType;
   }
 
-  get title() {
-    if (this.type === 'pak') {
-      return 'Pak';
-    } else if (this.type === 'save') {
-      return 'Save';
-    }
+  public get title(): string {
+    return this.type.charAt(0).toUpperCase() + this.type.slice(1) + 's';
   }
 
-  private list() {
-    this._apiService.filesList(this.type).subscribe({
+  private list(): void {
+    this.apiService.filesList(this.type).subscribe({
       next: paks => this.files = paks,
       complete: () => this.files.sort()
     });
   }
 
-  openCreateDialog() {
-    const createDialogRef = this._editDialog.open(FileEditDialogComponent, {
-      data: {file: {} as FileInfo, list: this.files}
+  public openCreateDialog(): void {
+    const newFile = this.type === 'pak' ? new Pak() : new Save();
+    const createDialogRef = this.editDialog.open(FileEditDialogComponent, {
+      data: {file: newFile, list: this.files}
     });
     createDialogRef.afterClosed().subscribe(data => {
       if (data) {
-        this._apiService.filePost(data, this.type).subscribe({
-          next: (file) => this.files.push(file),
+        this.apiService.filePost(data, this.type).subscribe({
+          next: file => this.files.push(file),
           complete: () => this.files.sort()
         });
       }
     });
   }
 
-  deleteConfirmDialog(i: number, prompt: string) {
-    const confirmDialogRef = this._confirmDialog.open(ConfirmDialogComponent, {data: prompt});
+  public deleteConfirmDialog(file: FileInfo, prompt: string): void {
+    const confirmDialogRef = this.confirmDialog.open(ConfirmDialogComponent, {data: prompt});
     confirmDialogRef.afterClosed().subscribe((answer) => {
       if (answer) {
-        this._apiService.delete(this.files[i]).subscribe({
-          complete: () => this.files.splice(i, 1)
+        this.apiService.delete(file).subscribe({
+          complete: () => this.files.splice(this.files.indexOf(file), 1)
         });
       }
     });
   }
 
-  ngOnInit() {
+ public ngOnInit(): void {
     this.list();
   }
 }
