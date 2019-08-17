@@ -4,6 +4,7 @@ import {MatDialog, Sort} from '@angular/material';
 import {InstanceEditDialogComponent} from '../../dialogs/instance-edit-dialog/instance-edit-dialog.component';
 import {ConfirmDialogComponent} from '../../dialogs/confirm-dialog/confirm-dialog.component';
 import {Instance, InstanceStatusCode} from 'src/app/api/instance.model';
+import {sortByOptions} from '../../utils/sort';
 
 @Component({
   selector: 'app-instances',
@@ -13,8 +14,9 @@ import {Instance, InstanceStatusCode} from 'src/app/api/instance.model';
 export class InstancesComponent implements OnInit {
 
   public instances: Instance[];
+  // Small hack to access the enum in the template
   public InstanceStatusCode: any = InstanceStatusCode;
-  private sortOptions = {active: 'name', direction: 'asc'};
+  private sortOptions: Sort = {active: 'name', direction: 'asc'};
 
   constructor(private apiService: ApiService,
               private editDialog: MatDialog,
@@ -29,14 +31,7 @@ export class InstancesComponent implements OnInit {
   }
 
   private sort(): void {
-    if (this.sortOptions) {
-      const col = this.sortOptions.active;
-      const isAsc = this.sortOptions.direction === 'asc';
-
-      this.instances.sort((a, b) => {
-        return (a[col] < b[col] ? -1 : 1) * (isAsc ? 1 : -1);
-      });
-    }
+    sortByOptions(this.instances, this.sortOptions);
   }
 
   private insert(instance: Instance): void {
@@ -46,6 +41,7 @@ export class InstancesComponent implements OnInit {
 
   private replace(oldInstance: Instance, newInstance: Instance): void {
     this.instances[this.instances.indexOf(oldInstance)] = newInstance;
+    this.sort();
   }
 
   /**
@@ -88,9 +84,8 @@ export class InstancesComponent implements OnInit {
         const newInstance = new Instance(data);
         this.insert(newInstance);
 
-        // Send the new instance data to the server
         this.apiService.instancePost(data).subscribe({
-          next: (response) => this.replace(newInstance, response)
+          next: response => this.replace(newInstance, response)
         });
       }
     });
@@ -107,9 +102,9 @@ export class InstancesComponent implements OnInit {
         // Replace with edited instance
         const editedInstance = new Instance(data);
         this.replace(instance, editedInstance);
-        // Send the changes to the server
+
         this.apiService.put(data).subscribe({
-          next: (response) => this.replace(editedInstance, response)
+          next: response => this.replace(editedInstance, response)
         });
       }
     });
@@ -129,8 +124,8 @@ export class InstancesComponent implements OnInit {
     });
   }
 
-  public onSortChange(sortOptions: Sort): void {
-    this.sortOptions = sortOptions;
+  public onSortChange(sort: Sort): void {
+    this.sortOptions = sort;
     this.sort();
   }
 

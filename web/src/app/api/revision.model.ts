@@ -6,6 +6,13 @@ export class Revision {
   url: string;
   id: number;
 
+  constructor(data?: any) {
+    if (data) {
+      this.r = data.r;
+      this.alias = data.alias;
+    }
+  }
+
   public toString(): string {
     return this.r.toString();
   }

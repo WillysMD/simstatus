@@ -25,7 +25,6 @@ export class ApiService {
   constructor(private httpClient: HttpClient) {
   }
 
-
   /*
    * Generics
    */
