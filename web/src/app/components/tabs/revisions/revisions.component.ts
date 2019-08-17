@@ -16,7 +16,7 @@ export class RevisionsComponent implements OnInit {
   public revisions: Revision[];
   // Small hack to access the enum in the template
   public RevisionStatusCode: any = RevisionStatusCode;
-  private sortOptions: Sort = {active: 'r', direction: 'asc'};
+  private sortOptions: Sort = {active: 'r', direction: 'desc'};
 
   constructor(private apiService: ApiService,
               private editDialog: MatDialog,
