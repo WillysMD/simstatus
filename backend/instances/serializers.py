@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Pak, Save, Revision, Instance
+from .models import Pak, Save, Revision, Simuconf, Instance
 from .local import LocalRevision, LocalInstance
 
 
@@ -65,6 +65,12 @@ class RevisionSerializer(ProtectedSerializer):
 class RevisionNestedSerializer(RevisionSerializer):
     id = serializers.IntegerField()
     r = serializers.IntegerField()
+
+
+class SimuconfSerializer(serializers.HyperlinkedModelSerializer):
+    class Meta:
+        model = Simuconf
+        fields = '__all__'
 
 
 class InstanceSerializer(serializers.ModelSerializer):

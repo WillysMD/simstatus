@@ -35,6 +35,11 @@ class Revision(models.Model):
     alias = models.TextField(null=True, unique=True)
 
 
+class Simuconf(models.Model):
+    name = models.TextField(unique=True)
+    data = models.TextField()
+
+
 class Instance(models.Model):
     name = models.TextField(unique=True)
     pid = models.IntegerField(null=True)

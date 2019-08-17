@@ -1,11 +1,10 @@
 from subprocess import run, Popen, PIPE
 from rest_framework import viewsets
 from rest_framework.views import APIView
-from rest_framework.generics import RetrieveAPIView
 from rest_framework.response import Response
 from rest_framework.decorators import action
-from .serializers import PakSerializer, SaveSerializer, RevisionSerializer, InstanceSerializer
-from .models import Pak, Save, Revision, Instance
+from .serializers import PakSerializer, SaveSerializer, RevisionSerializer, SimuconfSerializer, InstanceSerializer
+from .models import Pak, Save, Revision, Simuconf, Instance
 from .local import REPOSITORY_URL, LocalRevision, LocalInstance
 
 
@@ -23,21 +22,19 @@ class RevisionViewSet(viewsets.ModelViewSet):
     serializer_class = RevisionSerializer
     queryset = Revision.objects.all()
 
-
-class RevisionActionView(RetrieveAPIView):
-    serializer_class = RevisionSerializer
-    queryset = Revision.objects.all()
-
     def get_local_revision(self):
         return LocalRevision(self.get_object())
 
-
-class RevisionBuildView(RevisionActionView):
-    def get(self, request, *args, **kwargs):
+    @action(detail=True, methods=['get'])
+    def build(self, request, *args, **kwargs):
         local_revision = self.get_local_revision()
         local_revision.build()
-        
-        return super(RevisionBuildView, self).get(request, *args, **kwargs)
+        return self.retrieve(request, *args, **kwargs)
+
+
+class SimuconfViewSet(viewsets.ModelViewSet):
+    serializer_class = SimuconfSerializer
+    queryset = Simuconf.objects.all()
 
 
 class InstanceViewSet(viewsets.ModelViewSet):
@@ -47,43 +44,21 @@ class InstanceViewSet(viewsets.ModelViewSet):
     def get_local_instance(self):
         return LocalInstance(self.get_object())
 
-    @action(detail=True, methods=['get'])
-    def start(self, request):
-        local_instance = self.get_local_instance()
-        pid = local_instance.start()
-
-        if pid is not None:
-            instance = self.get_object()
-            instance.pid = pid
-            instance.save()
-
-        return self.detail(self, request)
-
     def update(self, request, *args, **kwargs):
         local_instance = LocalInstance(self.get_object())
         local_instance.rename(request.data['name'])
 
         return super(InstanceViewSet, self).update(request, *args, **kwargs)
 
-
-class InstanceActionView(RetrieveAPIView):
-    serializer_class = InstanceSerializer
-    queryset = Instance.objects.all()
-
-    def get_local_instance(self):
-        return LocalInstance(self.get_object())
-
-
-class InstanceInstallView(InstanceActionView):
-    def get(self, request, *args, **kwargs):
+    @action(detail=True, methods=['get'])
+    def install(self, request, *args, **kwargs):
         local_instance = self.get_local_instance()
         local_instance.install()
 
-        return super(InstanceInstallView, self).get(request, *args, **kwargs)
+        return self.retrieve(request, *args, **kwargs)
 
-
-class InstanceStartView(InstanceActionView):
-    def get(self, request, *args, **kwargs):
+    @action(detail=True, methods=['get'])
+    def start(self, request, *args, **kwargs):
         local_instance = self.get_local_instance()
         pid = local_instance.start()
 
@@ -92,15 +67,14 @@ class InstanceStartView(InstanceActionView):
             instance.pid = pid
             instance.save()
 
-        return super(InstanceStartView, self).get(request, *args, **kwargs)
+        return self.detail(self, request, *args, **kwargs)
 
-
-class InstanceStopView(InstanceActionView):
-    def get(self, request, *args, **kwargs):
+    @action(detail=True, methods=['get'])
+    def stop(self, request, *args, **kwargs):
         local_instance = self.get_local_instance()
         local_instance.stop()
-        
-        return super(InstanceStopView, self).get(request, *args, **kwargs)
+
+        return self.retrieve(request, *args, **kwargs)
 
 
 class InfoRevisionLatestView(APIView):
