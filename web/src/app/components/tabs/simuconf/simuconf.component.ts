@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
 import {Simuconf} from '../../../api/simuconf.model';
 import {ApiService} from '../../../api/api.service';
 
@@ -11,6 +11,7 @@ export class SimuconfComponent implements OnInit {
 
   configs: Simuconf[];
   selectedConfig: Simuconf;
+  @ViewChild('editor', {static: false}) editorEl: ElementRef;
 
   constructor(private apiService: ApiService) {
   }
@@ -24,8 +25,12 @@ export class SimuconfComponent implements OnInit {
     });
   }
 
-  save(event): void {
-    console.log(event);
+  save(): void {
+    this.selectedConfig.data = this.editorEl.nativeElement.innerText;
+
+    this.apiService.patch(this.selectedConfig).subscribe({
+      next: response => console.log(response)
+    });
   }
 
   ngOnInit(): void {

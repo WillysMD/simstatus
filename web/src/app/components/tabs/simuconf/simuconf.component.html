@@ -1,6 +1,6 @@
 <div class="toolbar">
   <div class="left">
-    <button mat-icon-button>
+    <button (click)="save()" mat-icon-button>
       <mat-icon>save</mat-icon>
     </button>
 
@@ -41,5 +41,5 @@
 </div>
 
 <div class="container">
-  <div class="editor" contenteditable="true" *ngIf="selectedConfig">{{selectedConfig.data}}</div>
+  <div #editor *ngIf="selectedConfig" class="editor" contenteditable="true">{{selectedConfig.data}}</div>
 </div>

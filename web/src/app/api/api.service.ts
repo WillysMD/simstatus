@@ -31,7 +31,14 @@ export class ApiService {
    * Generics
    */
 
+  /**
+   * @deprecated use patch instead
+   */
   put(object: any) {
+    return this.httpClient.patch<any>(object.url, object, httpDefaultOptions);
+  }
+
+  patch(object: any) {
     return this.httpClient.patch<any>(object.url, object, httpDefaultOptions);
   }
 
