@@ -3,6 +3,7 @@ import {HttpClient, HttpHeaders} from '@angular/common/http';
 import {Instance} from './instance.model';
 import {Revision} from './revision.model';
 import {FileInfo} from './file-info.model';
+import {Simuconf} from './simuconf.model';
 
 const httpDefaultOptions = {
   headers: new HttpHeaders({
@@ -19,6 +20,7 @@ export class ApiService {
   private revisionsUrl = 'http://localhost:8000/api/revisions/';
   private paksUrl = 'http://localhost:8000/api/paks/';
   private savesUrl = 'http://localhost:8000/api/saves/';
+  private simuconfUrl = 'http://localhost:8000/api/simuconf/';
   private infoRevisionLatestUrl = 'http://localhost:8000/api/info/revision/latest/';
   private infoLoadAvgUrl = 'http://localhost:8000/api/info/loadavg/';
 
@@ -99,6 +101,14 @@ export class ApiService {
     } else if (type === 'save') {
       return this.httpClient.post<FileInfo>(this.savesUrl, data);
     }
+  }
+
+  /*
+   * Simuconf
+   */
+
+  simuconfList() {
+    return this.httpClient.get<Simuconf[]>(this.simuconfUrl, httpDefaultOptions);
   }
 
   /*

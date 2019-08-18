@@ -8,13 +8,13 @@ import {ApiService} from '../../../api/api.service';
 })
 export class StatusBarComponent implements OnInit {
 
-  public loadAvg: string;
+  loadAvg: string;
   @Input() version: string;
 
   constructor(private apiService: ApiService) {
   }
 
-  public ngOnInit(): void {
+  ngOnInit(): void {
     this.apiService.infoLoadAvg().subscribe({
       next: response => this.loadAvg = response
     });

@@ -4,7 +4,7 @@ import {MatDialog, Sort} from '@angular/material';
 import {RevisionEditDialogComponent} from '../../dialogs/revision-edit-dialog/revision-edit-dialog.component';
 import {ConfirmDialogComponent} from '../../dialogs/confirm-dialog/confirm-dialog.component';
 import {Revision, RevisionStatusCode} from '../../../api/revision.model';
-import {sortByOptions} from '../../utils/sort';
+import {sortByOptions} from '../../../utils/sort';
 
 @Component({
   selector: 'app-revisions',
@@ -13,9 +13,9 @@ import {sortByOptions} from '../../utils/sort';
 })
 export class RevisionsComponent implements OnInit {
 
-  public revisions: Revision[];
+  revisions: Revision[];
   // Small hack to access the enum in the template
-  public RevisionStatusCode: any = RevisionStatusCode;
+  RevisionStatusCode: any = RevisionStatusCode;
   private sortOptions: Sort = {active: 'r', direction: 'desc'};
 
   constructor(private apiService: ApiService,
@@ -44,19 +44,19 @@ export class RevisionsComponent implements OnInit {
     this.sort();
   }
 
-  public refresh(): void {
+  refresh(): void {
     this.revisions = [];
     this.list();
   }
 
-  public build(revision: Revision): void {
+  build(revision: Revision): void {
     revision.status = RevisionStatusCode.BUIDLING;
     this.apiService.revisionBuild(revision.url).subscribe({
       next: response => this.replace(revision, response)
     });
   }
 
-  public openCreateDialog(): void {
+  openCreateDialog(): void {
     const createDialogRef = this.editDialog.open(RevisionEditDialogComponent, {
       data: {revision: new Revision(), list: this.revisions}
     });
@@ -74,7 +74,7 @@ export class RevisionsComponent implements OnInit {
     });
   }
 
-  public deleteConfirmDialog(revision: Revision, prompt: string): void {
+  deleteConfirmDialog(revision: Revision, prompt: string): void {
     const confirmDialogRef = this.confirmDialog.open(ConfirmDialogComponent, {data: prompt});
     confirmDialogRef.afterClosed().subscribe((answer) => {
       if (answer) {
@@ -88,12 +88,12 @@ export class RevisionsComponent implements OnInit {
     });
   }
 
-  public onSortChange(sort: Sort): void {
+  onSortChange(sort: Sort): void {
     this.sortOptions = sort;
     this.sort();
   }
 
-  public ngOnInit(): void {
+  ngOnInit(): void {
     this.list();
     setInterval(() => {
       this.list();

@@ -4,7 +4,7 @@ import {MatDialog, Sort} from '@angular/material';
 import {InstanceEditDialogComponent} from '../../dialogs/instance-edit-dialog/instance-edit-dialog.component';
 import {ConfirmDialogComponent} from '../../dialogs/confirm-dialog/confirm-dialog.component';
 import {Instance, InstanceStatusCode} from 'src/app/api/instance.model';
-import {sortByOptions} from '../../utils/sort';
+import {sortByOptions} from '../../../utils/sort';
 
 @Component({
   selector: 'app-instances',
@@ -13,9 +13,9 @@ import {sortByOptions} from '../../utils/sort';
 })
 export class InstancesComponent implements OnInit {
 
-  public instances: Instance[];
+  instances: Instance[];
   // Small hack to access the enum in the template
-  public InstanceStatusCode: any = InstanceStatusCode;
+  InstanceStatusCode: any = InstanceStatusCode;
   private sortOptions: Sort = {active: 'name', direction: 'asc'};
 
   constructor(private apiService: ApiService,
@@ -47,33 +47,33 @@ export class InstancesComponent implements OnInit {
   /**
    * Refresh list with visual cue
    */
-  public refresh(): void {
+  refresh(): void {
     this.instances = [];
     this.list();
   }
 
-  public install(instance: Instance): void {
+  install(instance: Instance): void {
     instance.status = InstanceStatusCode.WAITING;
     this.apiService.instanceInstall(instance).subscribe({
       next: response => this.replace(instance, response)
     });
   }
 
-  public start(instance: Instance): void {
+  start(instance: Instance): void {
     instance.status = InstanceStatusCode.WAITING;
     this.apiService.instanceStart(instance).subscribe({
       next: response => this.replace(instance, response)
     });
   }
 
-  public stop(instance: Instance): void {
+  stop(instance: Instance): void {
     instance.status = InstanceStatusCode.WAITING;
     this.apiService.instanceStop(instance).subscribe({
       next: response => this.replace(instance, response)
     });
   }
 
-  public openCreateDialog(): void {
+  openCreateDialog(): void {
     const dialogRef = this.editDialog.open(InstanceEditDialogComponent, {
       data: {edit: new Instance(), list: this.instances}
     });
@@ -91,7 +91,7 @@ export class InstancesComponent implements OnInit {
     });
   }
 
-  public openEditDialog(instance: Instance): void {
+  openEditDialog(instance: Instance): void {
     const dialogRef = this.editDialog.open(InstanceEditDialogComponent, {
       data: {edit: instance, list: this.instances}
     });
@@ -110,7 +110,7 @@ export class InstancesComponent implements OnInit {
     });
   }
 
-  public deleteConfirmDialog(instance: Instance, promt: string): void {
+  deleteConfirmDialog(instance: Instance, promt: string): void {
     const confirmDialogRef = this.confirmDialog.open(ConfirmDialogComponent, {data: promt});
     confirmDialogRef.afterClosed().subscribe((answer) => {
       if (answer) {
@@ -124,12 +124,12 @@ export class InstancesComponent implements OnInit {
     });
   }
 
-  public onSortChange(sort: Sort): void {
+  onSortChange(sort: Sort): void {
     this.sortOptions = sort;
     this.sort();
   }
 
-  public ngOnInit(): void {
+  ngOnInit(): void {
     this.list();
     // Auto refresh the list
     setInterval(() => {

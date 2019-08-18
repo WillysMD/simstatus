@@ -17,12 +17,13 @@ import {InstancesComponent} from './components/tabs/instances/instances.componen
 import {NavbarComponent} from './components/ui/navbar/navbar.component';
 import {InstanceEditDialogComponent} from './components/dialogs/instance-edit-dialog/instance-edit-dialog.component';
 import {ConfirmDialogComponent} from './components/dialogs/confirm-dialog/confirm-dialog.component';
-import {ReactiveFormsModule} from '@angular/forms';
+import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {FileEditDialogComponent} from './components/dialogs/file-edit-dialog/file-edit-dialog.component';
 import {RevisionsComponent} from './components/tabs/revisions/revisions.component';
 import {RevisionEditDialogComponent} from './components/dialogs/revision-edit-dialog/revision-edit-dialog.component';
 import {StatusBarComponent} from './components/ui/status-bar/status-bar.component';
 import {FilesComponent} from './components/tabs/files/files.component';
+import {SimuconfComponent} from './components/tabs/simuconf/simuconf.component';
 
 @NgModule({
   declarations: [
@@ -36,6 +37,7 @@ import {FilesComponent} from './components/tabs/files/files.component';
     RevisionEditDialogComponent,
     StatusBarComponent,
     FilesComponent,
+    SimuconfComponent,
   ],
   entryComponents: [
     InstanceEditDialogComponent,
@@ -61,6 +63,7 @@ import {FilesComponent} from './components/tabs/files/files.component';
     MatSelectModule,
     MatProgressSpinnerModule,
     MatSortModule,
+    FormsModule,
   ],
   exports: [],
   providers: [

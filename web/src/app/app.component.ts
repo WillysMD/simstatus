@@ -23,16 +23,16 @@ export class AppComponent implements OnInit {
               private browserTitle: Title) {
   }
 
-  public refresh(): void {
+  refresh(): void {
     this.activatedComponent.refresh();
   }
 
-  public onRouteActivate(component): void {
+  onRouteActivate(component): void {
     this.activatedComponent = component;
     this.refreshButton = !!(component.refresh);
   }
 
-  public ngOnInit(): void {
+  ngOnInit(): void {
     this.router.events.pipe(
       filter(event => event instanceof NavigationEnd),
       map(() => this.activatedRoute),

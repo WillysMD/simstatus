@@ -10,7 +10,7 @@ export class NavbarComponent {
   @Input() refreshButton: boolean;
   @Output() doRefresh = new EventEmitter();
 
-  public refresh(): void {
+  refresh(): void {
     this.doRefresh.emit();
   }
 }

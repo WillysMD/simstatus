@@ -15,7 +15,7 @@ import {Save} from '../../../api/save.model';
 })
 export class FilesComponent implements OnInit {
 
-  public files: FileInfo[];
+  files: FileInfo[];
 
   constructor(private activatedRoute: ActivatedRoute,
               private apiService: ApiService,
@@ -23,22 +23,22 @@ export class FilesComponent implements OnInit {
               private confirmDialog: MatDialog) {
   }
 
-  public get type(): string {
+  get type(): string {
     return this.activatedRoute.snapshot.data.fileType;
   }
 
-  public get title(): string {
+  get title(): string {
     return this.type.charAt(0).toUpperCase() + this.type.slice(1) + 's';
   }
 
   private list(): void {
     this.apiService.filesList(this.type).subscribe({
-      next: paks => this.files = paks,
+      next: files => this.files = files,
       complete: () => this.files.sort()
     });
   }
 
-  public openCreateDialog(): void {
+  openCreateDialog(): void {
     const newFile = this.type === 'pak' ? new Pak() : new Save();
     const createDialogRef = this.editDialog.open(FileEditDialogComponent, {
       data: {file: newFile, list: this.files}
@@ -53,7 +53,7 @@ export class FilesComponent implements OnInit {
     });
   }
 
-  public deleteConfirmDialog(file: FileInfo, prompt: string): void {
+  deleteConfirmDialog(file: FileInfo, prompt: string): void {
     const confirmDialogRef = this.confirmDialog.open(ConfirmDialogComponent, {data: prompt});
     confirmDialogRef.afterClosed().subscribe((answer) => {
       if (answer) {
@@ -64,7 +64,7 @@ export class FilesComponent implements OnInit {
     });
   }
 
- public ngOnInit(): void {
+  ngOnInit(): void {
     this.list();
   }
 }
