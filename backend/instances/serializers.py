@@ -71,6 +71,7 @@ class SimuconfSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Simuconf
         fields = '__all__'
+        read_only_fields = ['default']
 
 
 class InstanceSerializer(serializers.ModelSerializer):
