@@ -1,0 +1,48 @@
+.toolbar
+  position: fixed
+  width: 100%
+  height: 50px
+  display: flex
+  flex-direction: row
+  align-items: center
+  background: #ffffff
+  border-bottom: 1px solid #aaa
+
+  div:first-child
+    padding-left: 2em
+
+  div:last-child
+    padding-right: 2em
+
+  .left, .right
+    width: 120px
+
+  .middle
+    width: 40%
+
+  .fill
+    flex: 1
+
+  .configSelect
+    padding: .6em 0 .5em 0
+
+
+.container
+  margin-top: 50px
+  padding-left: 2em
+  display: flex
+  flex-direction: row
+
+  .editor
+    flex: 1
+    padding: 1em .5em
+    border-left: 1px solid #aaaaaa
+    white-space: pre-wrap
+    font-family: 'Fira Code', monospace
+    font-size: 13px
+
+  .editor:focus
+    outline: none
+
+.container:focus-within
+  background: #eeeeee

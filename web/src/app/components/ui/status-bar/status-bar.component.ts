@@ -1,5 +1,5 @@
-import {Component, OnInit} from '@angular/core';
-import {ApiService} from '../../../api.service';
+import {Component, Input, OnInit} from '@angular/core';
+import {ApiService} from '../../../api/api.service';
 
 @Component({
   selector: 'app-status-bar',
@@ -9,12 +9,13 @@ import {ApiService} from '../../../api.service';
 export class StatusBarComponent implements OnInit {
 
   loadAvg: string;
+  @Input() version: string;
 
-  constructor(private _apiService: ApiService) {
+  constructor(private apiService: ApiService) {
   }
 
-  ngOnInit() {
-    this._apiService.infoLoadAvg().subscribe({
+  ngOnInit(): void {
+    this.apiService.infoLoadAvg().subscribe({
       next: response => this.loadAvg = response
     });
   }

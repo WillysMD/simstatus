@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { FormFieldComponent } from './form-field.component';
+import { SimuconfComponent } from './simuconf.component';
 
-describe('FormFieldComponent', () => {
-  let component: FormFieldComponent;
-  let fixture: ComponentFixture<FormFieldComponent>;
+describe('SimuconfComponent', () => {
+  let component: SimuconfComponent;
+  let fixture: ComponentFixture<SimuconfComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ FormFieldComponent ]
+      declarations: [ SimuconfComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(FormFieldComponent);
+    fixture = TestBed.createComponent(SimuconfComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

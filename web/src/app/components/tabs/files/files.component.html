@@ -5,14 +5,14 @@
     <span class="file">File</span>
     <mat-divider></mat-divider>
   </mat-list-item>
-  <mat-list-item *ngFor="let file of files; index as i;">
+  <mat-list-item *ngFor="let file of files">
     <span class="name">{{file.name}}</span>
     <span class="version">{{file.version}}</span>
     <span class="file"><a mat-button href="{{file.file}}">Download</a></span>
     <span class="fill"></span>
     <span class="edit">
       <button
-        (click)="deleteConfirmDialog(i, 'Do you want to delete the following file: ' + file.name + '-' + file.version)"
+        (click)="deleteConfirmDialog(file, 'Do you want to delete the following file: ' + file.name + '-' + file.version)"
         mat-icon-button aria-label="Delete pak" [disabled]="file.protected">
         <mat-icon>delete</mat-icon>
       </button>

@@ -1,0 +1,45 @@
+<div class="toolbar">
+  <div class="left">
+    <button (click)="save()" mat-icon-button>
+      <mat-icon>save</mat-icon>
+    </button>
+
+    <button mat-icon-button>
+      <mat-icon>undo</mat-icon>
+    </button>
+
+    <button mat-icon-button>
+      <mat-icon>redo</mat-icon>
+    </button>
+  </div>
+
+  <div class="fill"></div>
+
+  <div class="middle">
+    <div class="configSelect">
+      <mat-select [(ngModel)]="selectedConfig">
+        <mat-option *ngFor="let config of configs" [value]="config">{{config.name}}</mat-option>
+      </mat-select>
+    </div>
+  </div>
+
+  <div class="fill"></div>
+
+  <div class="right">
+    <button mat-icon-button>
+      <mat-icon>add</mat-icon>
+    </button>
+
+    <button mat-icon-button>
+      <mat-icon>save_alt</mat-icon>
+    </button>
+
+    <button mat-icon-button>
+      <mat-icon>restore</mat-icon>
+    </button>
+  </div>
+</div>
+
+<div class="container">
+  <div #editor *ngIf="selectedConfig" class="editor" contenteditable="true">{{selectedConfig.data}}</div>
+</div>

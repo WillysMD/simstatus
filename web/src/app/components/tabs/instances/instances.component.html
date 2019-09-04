@@ -12,18 +12,18 @@
     <div class="actions"></div>
   </mat-list-item>
   <mat-divider></mat-divider>
-  <mat-list-item *ngFor="let instance of instances; index as i">
+  <mat-list-item *ngFor="let instance of instances">
     <div [ngSwitch]="instance.status" class="switch">
-      <button (click)="stop(i)" *ngSwitchCase="InstanceStatusCode.RUNNING" mat-icon-button aria-label="Stop">
+      <button (click)="stop(instance)" *ngSwitchCase="InstanceStatusCode.RUNNING" mat-icon-button aria-label="Stop">
         <mat-icon>pause</mat-icon>
       </button>
-      <button (click)="start(i)" *ngSwitchCase="InstanceStatusCode.READY" mat-icon-button aria-label="Start">
+      <button (click)="start(instance)" *ngSwitchCase="InstanceStatusCode.READY" mat-icon-button aria-label="Start">
         <mat-icon>play_arrow</mat-icon>
       </button>
-      <span *ngSwitchCase="InstanceStatusCode.BUILDING">
+      <span *ngSwitchCase="InstanceStatusCode.WAITING">
         <mat-spinner diameter="20" aria-label="Building"></mat-spinner>
       </span>
-      <button (click)="install(i)" *ngSwitchCase="InstanceStatusCode.CREATED" mat-icon-button
+      <button (click)="install(instance)" *ngSwitchCase="InstanceStatusCode.CREATED" mat-icon-button
               aria-label="Install instance">
         <mat-icon>build</mat-icon>
       </button>
@@ -41,7 +41,7 @@
     </div>
     <div class="fill"></div>
     <div class="actions">
-      <button (click)="openEditDialog(i)" mat-icon-button aria-label="Edit configuration">
+      <button (click)="openEditDialog(instance)" mat-icon-button aria-label="Edit configuration">
         <mat-icon>settings</mat-icon>
       </button>
       <button (click)="deleteConfirmDialog(instance, 'Are you sure you want to delete this instance?')" mat-icon-button

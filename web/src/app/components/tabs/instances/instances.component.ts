@@ -1,13 +1,10 @@
 import {Component, OnInit} from '@angular/core';
-import {ApiService, errorMessage, Instance, InstanceStatusCode} from '../../../api.service';
-import {MatDialog, MatSnackBar, Sort} from '@angular/material';
+import {ApiService} from '../../../api/api.service';
+import {MatDialog, Sort} from '@angular/material';
 import {InstanceEditDialogComponent} from '../../dialogs/instance-edit-dialog/instance-edit-dialog.component';
 import {ConfirmDialogComponent} from '../../dialogs/confirm-dialog/confirm-dialog.component';
-
-const ERROR_SNACK_ACTION = 'OK';
-const ERROR_SNACK_CONFIG = {
-  duration: 5000
-};
+import {Instance, InstanceStatusCode} from 'src/app/api/instance.model';
+import {sortByOptions} from '../../../utils/sort';
 
 @Component({
   selector: 'app-instances',
@@ -17,187 +14,122 @@ const ERROR_SNACK_CONFIG = {
 export class InstancesComponent implements OnInit {
 
   instances: Instance[];
+  // Small hack to access the enum in the template
   InstanceStatusCode: any = InstanceStatusCode;
+  private sortOptions: Sort = {active: 'name', direction: 'asc'};
 
-  private sortOptions = {active: 'name', direction: 'asc'};
-
-  constructor(private _apiService: ApiService,
-              private _editDialog: MatDialog,
-              private _confirmDialog: MatDialog,
-              private _errorSnack: MatSnackBar) {
+  constructor(private apiService: ApiService,
+              private editDialog: MatDialog,
+              private confirmDialog: MatDialog) {
   }
 
-  private list() {
-    this._apiService.instancesList().subscribe({
-      error: err => {
-        this._errorSnack.open(errorMessage(err), ERROR_SNACK_ACTION, ERROR_SNACK_CONFIG);
-      },
-      next: instances => {
-        // Get the file and save infos for each instance
-        // TODO: reduce the number of requests by serializing the related models
-        for (const instance of instances) {
-          this.getRelatedInfos(instance);
-        }
-        this.instances = instances;
-      },
+  private list(): void {
+    this.apiService.instancesList().subscribe({
+      next: instances => this.instances = instances,
       complete: () => this.sort()
     });
   }
 
-  private sort() {
-    if (this.sortOptions) {
-      const col = this.sortOptions.active;
-      const isAsc = this.sortOptions.direction === 'asc';
-
-      this.instances.sort((a, b) => {
-        return (a[col] < b[col] ? -1 : 1) * (isAsc ? 1 : -1);
-      });
-    }
+  private sort(): void {
+    sortByOptions(this.instances, this.sortOptions);
   }
 
-  /**
-   * Add revision, file and save info to an instance
-   * @param instance to udpate
-   */
-  private getRelatedInfos(instance) {
-    this._apiService.addRevisionInfo(instance);
-    this._apiService.addPakInfo(instance);
-    this._apiService.addSaveInfo(instance);
-  }
-
-
-  /**
-   * Insert a instance and keep the array sorted
-   * @param instance to insert
-   * @return the index at which the instance was inserted
-   */
-  private insert(instance: Instance): number {
+  private insert(instance: Instance): void {
     this.instances.push(instance);
     this.sort();
-    return this.instances.indexOf(instance);
+  }
+
+  private replace(oldInstance: Instance, newInstance: Instance): void {
+    this.instances[this.instances.indexOf(oldInstance)] = newInstance;
+    this.sort();
   }
 
   /**
    * Refresh list with visual cue
    */
-  refresh() {
+  refresh(): void {
     this.instances = [];
     this.list();
   }
 
-  install(i: number) {
-    this.instances[i].status = InstanceStatusCode.BUILDING;
-    this._apiService.instanceInstall(this.instances[i]).subscribe({
-      error: err => {
-        this.instances[i].status = InstanceStatusCode.CREATED;
-        this._errorSnack.open(err.message, ERROR_SNACK_ACTION, ERROR_SNACK_CONFIG);
-      },
-      next: instance => this.instances[i].status = instance.status
+  install(instance: Instance): void {
+    instance.status = InstanceStatusCode.WAITING;
+    this.apiService.instanceInstall(instance).subscribe({
+      next: response => this.replace(instance, response)
     });
   }
 
-  start(i: number) {
-    this.instances[i].status = InstanceStatusCode.BUILDING;
-    this._apiService.instanceStart(this.instances[i]).subscribe({
-      error: err => {
-        this.instances[i].status = InstanceStatusCode.READY;
-        this._errorSnack.open(err.message, ERROR_SNACK_ACTION, ERROR_SNACK_CONFIG);
-      },
-      next: instance => this.instances[i].status = instance.status
+  start(instance: Instance): void {
+    instance.status = InstanceStatusCode.WAITING;
+    this.apiService.instanceStart(instance).subscribe({
+      next: response => this.replace(instance, response)
     });
   }
 
-  stop(i: number) {
-    this.instances[i].status = InstanceStatusCode.BUILDING;
-    this._apiService.instanceStop(this.instances[i]).subscribe({
-      error: err => {
-        this.instances[i].status = InstanceStatusCode.READY;
-        this._errorSnack.open(err.message, ERROR_SNACK_ACTION, ERROR_SNACK_CONFIG);
-      },
-      next: instance => this.instances[i].status = instance.status
+  stop(instance: Instance): void {
+    instance.status = InstanceStatusCode.WAITING;
+    this.apiService.instanceStop(instance).subscribe({
+      next: response => this.replace(instance, response)
     });
   }
 
-  /**
-   * Open the instance edit dialog with empty instance data
-   */
-  openCreateDialog() {
-    const dialogRef = this._editDialog.open(InstanceEditDialogComponent, {
-      data: {instance: {} as Instance, list: this.instances}
+  openCreateDialog(): void {
+    const dialogRef = this.editDialog.open(InstanceEditDialogComponent, {
+      data: {edit: new Instance(), list: this.instances}
     });
     dialogRef.afterClosed().subscribe(data => {
-      if (data != null) {
+      if (data) {
         // Set spinner mode while the server is installing
-        data.status = InstanceStatusCode.BUILDING;
-        const i = this.insert(data as Instance);
+        data.status = InstanceStatusCode.WAITING;
+        const newInstance = new Instance(data);
+        this.insert(newInstance);
 
-        // Send the new instance data to the server
-        this._apiService.instancePost(data).subscribe({
-          error: err => this._errorSnack.open(err.message, ERROR_SNACK_ACTION, ERROR_SNACK_CONFIG),
-          next: (response) => {
-            this.instances[i] = response;
-            this.getRelatedInfos(this.instances[i]);
-          }
+        this.apiService.instancePost(data).subscribe({
+          next: response => this.replace(newInstance, response)
         });
       }
     });
   }
 
-  /**
-   * Open the instance edit dialog with the data from the selected instance
-   * @param i - instance array id to update
-   */
-  openEditDialog(i: number) {
-    const dialogRef = this._editDialog.open(InstanceEditDialogComponent, {
-      data: {instance: this.instances[i], list: this.instances}
+  openEditDialog(instance: Instance): void {
+    const dialogRef = this.editDialog.open(InstanceEditDialogComponent, {
+      data: {edit: instance, list: this.instances}
     });
     dialogRef.afterClosed().subscribe(data => {
-      if (data != null) {
+      if (data) {
         // Switch to spinner mode while the server is installing
-        data.status = InstanceStatusCode.BUILDING;
-        // Replace with edited instance and get revision, file and save infos
-        this.instances[i] = data as Instance;
-        this.getRelatedInfos(this.instances[i]);
+        data.status = InstanceStatusCode.WAITING;
+        // Replace with edited instance
+        const editedInstance = new Instance(data);
+        this.replace(instance, editedInstance);
 
-        // Send the changes to the server
-        this._apiService.put(data).subscribe({
-          error: err => this._errorSnack.open(err.message, ERROR_SNACK_ACTION, ERROR_SNACK_CONFIG),
-          next: (response) => {
-            this.instances[i] = response;
-            this.getRelatedInfos(this.instances[i]);
-          }
+        this.apiService.put(data).subscribe({
+          next: response => this.replace(editedInstance, response)
         });
       }
     });
   }
 
-  /**
-   * Open confirm dialog and if yes send delete request to the API
-   * @param instance - instance to delete
-   * @param promt - delete confirm dialog text
-   */
-  deleteConfirmDialog(instance: Instance, promt: string) {
-    const confirmDialogRef = this._confirmDialog.open(ConfirmDialogComponent, {data: promt});
+  deleteConfirmDialog(instance: Instance, promt: string): void {
+    const confirmDialogRef = this.confirmDialog.open(ConfirmDialogComponent, {data: promt});
     confirmDialogRef.afterClosed().subscribe((answer) => {
       if (answer) {
         // Switch to spinner mode while waiting for the server
-        instance.status = InstanceStatusCode.BUILDING;
-
+        instance.status = InstanceStatusCode.WAITING;
         // Send a delete request to the server
-        this._apiService.delete(instance).subscribe({
-          error: err => this._errorSnack.open(err.message, ERROR_SNACK_ACTION, ERROR_SNACK_CONFIG),
+        this.apiService.delete(instance).subscribe({
           complete: () => this.instances.splice(this.instances.indexOf(instance), 1)
         });
       }
     });
   }
 
-  onSortChange(sortOptions: Sort) {
-    this.sortOptions = sortOptions;
+  onSortChange(sort: Sort): void {
+    this.sortOptions = sort;
     this.sort();
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.list();
     // Auto refresh the list
     setInterval(() => {

@@ -35,6 +35,17 @@ class Revision(models.Model):
     alias = models.TextField(null=True, unique=True)
 
 
+class Simuconf(models.Model):
+    name = models.TextField(unique=True)
+    default = models.NullBooleanField(default=None)
+    data = models.TextField()
+
+    def save(self, *args, **kwargs):
+        if self.default is False:
+            self.default = None
+        return super(Simuconf, self).save(*args, **kwargs)
+
+
 class Instance(models.Model):
     name = models.TextField(unique=True)
     pid = models.IntegerField(null=True)
