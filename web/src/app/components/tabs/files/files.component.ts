@@ -19,8 +19,7 @@ export class FilesComponent implements OnInit {
 
   constructor(private activatedRoute: ActivatedRoute,
               private apiService: ApiService,
-              private editDialog: MatDialog,
-              private confirmDialog: MatDialog) {
+              private dialog: MatDialog) {
   }
 
   get type(): string {
@@ -40,7 +39,7 @@ export class FilesComponent implements OnInit {
 
   openCreateDialog(): void {
     const newFile = this.type === 'pak' ? new Pak() : new Save();
-    const createDialogRef = this.editDialog.open(FileEditDialogComponent, {
+    const createDialogRef = this.dialog.open(FileEditDialogComponent, {
       data: {file: newFile, list: this.files}
     });
     createDialogRef.afterClosed().subscribe(data => {
@@ -54,7 +53,7 @@ export class FilesComponent implements OnInit {
   }
 
   deleteConfirmDialog(file: FileInfo, prompt: string): void {
-    const confirmDialogRef = this.confirmDialog.open(ConfirmDialogComponent, {data: prompt});
+    const confirmDialogRef = this.dialog.open(ConfirmDialogComponent, {data: prompt});
     confirmDialogRef.afterClosed().subscribe((answer) => {
       if (answer) {
         this.apiService.delete(file).subscribe({

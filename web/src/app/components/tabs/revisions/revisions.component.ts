@@ -19,8 +19,7 @@ export class RevisionsComponent implements OnInit {
   private sortOptions: Sort = {active: 'r', direction: 'desc'};
 
   constructor(private apiService: ApiService,
-              private editDialog: MatDialog,
-              private confirmDialog: MatDialog) {
+              private dialog: MatDialog) {
   }
 
   private list(): void {
@@ -57,7 +56,7 @@ export class RevisionsComponent implements OnInit {
   }
 
   openCreateDialog(): void {
-    const createDialogRef = this.editDialog.open(RevisionEditDialogComponent, {
+    const createDialogRef = this.dialog.open(RevisionEditDialogComponent, {
       data: {revision: new Revision(), list: this.revisions}
     });
     createDialogRef.afterClosed().subscribe(data => {
@@ -75,7 +74,7 @@ export class RevisionsComponent implements OnInit {
   }
 
   deleteConfirmDialog(revision: Revision, prompt: string): void {
-    const confirmDialogRef = this.confirmDialog.open(ConfirmDialogComponent, {data: prompt});
+    const confirmDialogRef = this.dialog.open(ConfirmDialogComponent, {data: prompt});
     confirmDialogRef.afterClosed().subscribe((answer) => {
       if (answer) {
         // Switch to spinner mode while the revision is being deleted
