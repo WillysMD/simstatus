@@ -4,8 +4,7 @@ services:
   django:
     build: ./backend
     volumes:
-      - ./backend:/django
-      - uploads:/django/resources/uploads
+      - uploads:/simstatus/backend/resources/uploads
     networks:
       - nginx_network
 
@@ -20,16 +19,14 @@ services:
     restart: always
     image: nginx:stable-alpine
     ports:
-      - 8080:8080
+      - 80:80
     volumes:
-      - ./etc/nginx/conf.d:/etc/nginx/conf.d
       - uploads:/www/uploads
     depends_on:
       - django
       - web
     networks:
       - nginx_network
-
 
 networks:
   nginx_network:
