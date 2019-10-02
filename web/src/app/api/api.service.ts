@@ -74,11 +74,11 @@ export class ApiService {
    */
 
   revisionsList() {
-    return this.httpClient.get<Revision[]>(`${this.baseUri}/revision`, httpDefaultOptions);
+    return this.httpClient.get<Revision[]>(`${this.baseUri}/revisions`, httpDefaultOptions);
   }
 
   revisionsPost(data: FormData) {
-    return this.httpClient.post<Revision>(`${this.baseUri}/revision`, data, httpDefaultOptions);
+    return this.httpClient.post<Revision>(`${this.baseUri}/revisions`, data, httpDefaultOptions);
   }
 
   revisionGet(url: string) {
