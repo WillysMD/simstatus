@@ -50,23 +50,23 @@ export class ApiService {
    */
 
   instancesList() {
-    return this.httpClient.get<Instance[]>(`${this.baseUri}/instances`, httpDefaultOptions);
+    return this.httpClient.get<Instance[]>(`${this.baseUri}/instances/`, httpDefaultOptions);
   }
 
   instancePost(instance: Instance) {
-    return this.httpClient.post<Instance>(`${this.baseUri}/instances`, instance, httpDefaultOptions);
+    return this.httpClient.post<Instance>(`${this.baseUri}/instances/`, instance, httpDefaultOptions);
   }
 
   instanceInstall(instance: Instance) {
-    return this.httpClient.get<Instance>(`${this.baseUri}/instances/install`, httpDefaultOptions);
+    return this.httpClient.get<Instance>(`${this.baseUri}/instances/install/`, httpDefaultOptions);
   }
 
   instanceStart(instance: Instance) {
-    return this.httpClient.get<Instance>(`${this.baseUri}/instances/start`, httpDefaultOptions);
+    return this.httpClient.get<Instance>(`${this.baseUri}/instances/start/`, httpDefaultOptions);
   }
 
   instanceStop(instance: Instance) {
-    return this.httpClient.get<Instance>(`${this.baseUri}/instances/stop`, httpDefaultOptions);
+    return this.httpClient.get<Instance>(`${this.baseUri}/instances/stop/`, httpDefaultOptions);
   }
 
   /*
@@ -74,11 +74,11 @@ export class ApiService {
    */
 
   revisionsList() {
-    return this.httpClient.get<Revision[]>(`${this.baseUri}/revisions`, httpDefaultOptions);
+    return this.httpClient.get<Revision[]>(`${this.baseUri}/revisions/`, httpDefaultOptions);
   }
 
   revisionsPost(data: FormData) {
-    return this.httpClient.post<Revision>(`${this.baseUri}/revisions`, data, httpDefaultOptions);
+    return this.httpClient.post<Revision>(`${this.baseUri}/revisions/`, data, httpDefaultOptions);
   }
 
   revisionGet(url: string) {
@@ -86,7 +86,7 @@ export class ApiService {
   }
 
   revisionBuild(url: string) {
-    return this.httpClient.get<Revision>(`{url}/build`, httpDefaultOptions);
+    return this.httpClient.get<Revision>(`{url}/build/`, httpDefaultOptions);
   }
 
   /*
@@ -95,17 +95,17 @@ export class ApiService {
 
   filesList(type: string) {
     if (type === 'pak') {
-      return this.httpClient.get<FileInfo[]>(`${this.baseUri}/paks`, httpDefaultOptions);
+      return this.httpClient.get<FileInfo[]>(`${this.baseUri}/paks/`, httpDefaultOptions);
     } else if (type === 'save') {
-      return this.httpClient.get<FileInfo[]>(`${this.baseUri}/saves`, httpDefaultOptions);
+      return this.httpClient.get<FileInfo[]>(`${this.baseUri}/saves/`, httpDefaultOptions);
     }
   }
 
   filePost(data: FileInfo, type: string) {
     if (type === 'pak') {
-      return this.httpClient.post<FileInfo>(`${this.baseUri}/paks`, data);
+      return this.httpClient.post<FileInfo>(`${this.baseUri}/paks/`, data);
     } else if (type === 'save') {
-      return this.httpClient.post<FileInfo>(`${this.baseUri}/saves`, data);
+      return this.httpClient.post<FileInfo>(`${this.baseUri}/saves/`, data);
     }
   }
 
@@ -114,7 +114,7 @@ export class ApiService {
    */
 
   simuconfList() {
-    return this.httpClient.get<Simuconf[]>(`${this.baseUri}/simuconf`, httpDefaultOptions);
+    return this.httpClient.get<Simuconf[]>(`${this.baseUri}/simuconf/`, httpDefaultOptions);
   }
 
   /*
@@ -122,10 +122,10 @@ export class ApiService {
    */
 
   infoRevisionLatest() {
-    return this.httpClient.get<number>(`${this.baseUri}/info/revision/latest`);
+    return this.httpClient.get<number>(`${this.baseUri}/info/revision/latest/`);
   }
 
   infoLoadAvg() {
-    return this.httpClient.get<string>(`${this.baseUri}/info/loadavg`);
+    return this.httpClient.get<string>(`${this.baseUri}/info/loadavg/`);
   }
 }
