@@ -1,4 +1,4 @@
-import {Injectable} from '@angular/core';
+import {Injectable, isDevMode} from '@angular/core';
 import {HttpClient, HttpHeaders} from '@angular/common/http';
 import {Instance} from './instance.model';
 import {Revision} from './revision.model';
@@ -16,15 +16,14 @@ const httpDefaultOptions = {
 })
 export class ApiService {
 
-  private instancesUrl = 'http://localhost:8000/api/instances/';
-  private revisionsUrl = 'http://localhost:8000/api/revisions/';
-  private paksUrl = 'http://localhost:8000/api/paks/';
-  private savesUrl = 'http://localhost:8000/api/saves/';
-  private simuconfUrl = 'http://localhost:8000/api/simuconf/';
-  private infoRevisionLatestUrl = 'http://localhost:8000/api/info/revision/latest/';
-  private infoLoadAvgUrl = 'http://localhost:8000/api/info/loadavg/';
+  private readonly baseUri: string;
 
   constructor(private httpClient: HttpClient) {
+    if (isDevMode()) {
+      this.baseUri = 'http://localhost:8000/api';
+    } else {
+      this.baseUri = '/api';
+    }
   }
 
   /*
@@ -51,23 +50,23 @@ export class ApiService {
    */
 
   instancesList() {
-    return this.httpClient.get<Instance[]>(this.instancesUrl, httpDefaultOptions);
+    return this.httpClient.get<Instance[]>(`${this.baseUri}/instances/`, httpDefaultOptions);
   }
 
   instancePost(instance: Instance) {
-    return this.httpClient.post<Instance>(this.instancesUrl, instance, httpDefaultOptions);
+    return this.httpClient.post<Instance>(`${this.baseUri}/instances/`, instance, httpDefaultOptions);
   }
 
   instanceInstall(instance: Instance) {
-    return this.httpClient.get<Instance>(instance.url + 'install/', httpDefaultOptions);
+    return this.httpClient.get<Instance>(`${this.baseUri}/instances/install/`, httpDefaultOptions);
   }
 
   instanceStart(instance: Instance) {
-    return this.httpClient.get<Instance>(instance.url + 'start/', httpDefaultOptions);
+    return this.httpClient.get<Instance>(`${this.baseUri}/instances/start/`, httpDefaultOptions);
   }
 
   instanceStop(instance: Instance) {
-    return this.httpClient.get<Instance>(instance.url + 'stop/', httpDefaultOptions);
+    return this.httpClient.get<Instance>(`${this.baseUri}/instances/stop/`, httpDefaultOptions);
   }
 
   /*
@@ -75,11 +74,11 @@ export class ApiService {
    */
 
   revisionsList() {
-    return this.httpClient.get<Revision[]>(this.revisionsUrl, httpDefaultOptions);
+    return this.httpClient.get<Revision[]>(`${this.baseUri}/revisions/`, httpDefaultOptions);
   }
 
   revisionsPost(data: FormData) {
-    return this.httpClient.post<Revision>(this.revisionsUrl, data, httpDefaultOptions);
+    return this.httpClient.post<Revision>(`${this.baseUri}/revisions/`, data, httpDefaultOptions);
   }
 
   revisionGet(url: string) {
@@ -87,7 +86,7 @@ export class ApiService {
   }
 
   revisionBuild(url: string) {
-    return this.httpClient.get<Revision>(url + 'build/', httpDefaultOptions);
+    return this.httpClient.get<Revision>(`{url}/build/`, httpDefaultOptions);
   }
 
   /*
@@ -96,17 +95,17 @@ export class ApiService {
 
   filesList(type: string) {
     if (type === 'pak') {
-      return this.httpClient.get<FileInfo[]>(this.paksUrl, httpDefaultOptions);
+      return this.httpClient.get<FileInfo[]>(`${this.baseUri}/paks/`, httpDefaultOptions);
     } else if (type === 'save') {
-      return this.httpClient.get<FileInfo[]>(this.savesUrl, httpDefaultOptions);
+      return this.httpClient.get<FileInfo[]>(`${this.baseUri}/saves/`, httpDefaultOptions);
     }
   }
 
   filePost(data: FileInfo, type: string) {
     if (type === 'pak') {
-      return this.httpClient.post<FileInfo>(this.paksUrl, data);
+      return this.httpClient.post<FileInfo>(`${this.baseUri}/paks/`, data);
     } else if (type === 'save') {
-      return this.httpClient.post<FileInfo>(this.savesUrl, data);
+      return this.httpClient.post<FileInfo>(`${this.baseUri}/saves/`, data);
     }
   }
 
@@ -115,7 +114,7 @@ export class ApiService {
    */
 
   simuconfList() {
-    return this.httpClient.get<Simuconf[]>(this.simuconfUrl, httpDefaultOptions);
+    return this.httpClient.get<Simuconf[]>(`${this.baseUri}/simuconf/`, httpDefaultOptions);
   }
 
   /*
@@ -123,10 +122,10 @@ export class ApiService {
    */
 
   infoRevisionLatest() {
-    return this.httpClient.get<number>(this.infoRevisionLatestUrl);
+    return this.httpClient.get<number>(`${this.baseUri}/info/revision/latest/`);
   }
 
   infoLoadAvg() {
-    return this.httpClient.get<string>(this.infoLoadAvgUrl);
+    return this.httpClient.get<string>(`${this.baseUri}/info/loadavg/`);
   }
 }
