@@ -77,10 +77,23 @@ WSGI_APPLICATION = 'simuhead.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/2.2/ref/settings/#databases
 
+if DEBUG:
+    DB_USER = 'simstatus-dev'
+    DB_NAME = 'simstatus-dev'
+    DB_PASSWORD = 'Ug13&*&mmh9$siG9#H8K'
+else:
+    DB_USER = 'simstatus-prod'
+    DB_NAME = 'simstatus-prod'
+    DB_PASSWORD = 'H4$3xT7Z0@I!0gQ0#j7t'
+
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': DB_NAME,
+        'USER': DB_USER,
+        'PASSWORD': DB_PASSWORD,
+        'HOST': 'db.havek.es',
+        'PORT': '5432',
     }
 }
 
