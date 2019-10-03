@@ -11,7 +11,7 @@ services:
   web:
     build: ./web
     volumes:
-      - ./web:/web
+      - web:/simstatus/web/dist/simstatus-frontend
     networks:
       - nginx_network
 
@@ -21,7 +21,9 @@ services:
     ports:
       - 80:80
     volumes:
-      - uploads:/www/uploads
+        - ./etc/nginx/conf.d:/etc/nginx/conf.d
+        - uploads:/www/uploads
+        - web:/www
     depends_on:
       - django
       - web
@@ -34,3 +36,4 @@ networks:
 
 volumes:
   uploads:
+  web:
