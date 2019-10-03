@@ -1,4 +1,4 @@
-FROM python:3.7-slim-buster
+FROM python:3.7-buster
 
 ENV PYTHONUNBUFFERED 1
 
@@ -6,7 +6,7 @@ RUN apt-get install gcc subversion zlib1g-dev libbz2-dev
 
 EXPOSE 8000/tcp
 
-COPY ./backend /simstatus/backend
+COPY ./ /simstatus/backend
 WORKDIR /simstatus/backend
 
 RUN pip install pipenv && pipenv install --deploy --ignore-pipfile
