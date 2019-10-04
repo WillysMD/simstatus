@@ -7,6 +7,8 @@ services:
       - uploads:/simstatus/backend/resources/uploads
     networks:
       - nginx_network
+    extra_hosts:
+      - "db.havek.es:10.0.0.66"
 
   web:
     build: ./web
