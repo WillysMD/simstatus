@@ -63,10 +63,7 @@ export class InstanceEditDialogComponent implements OnInit {
   constructor(public dialogRef: MatDialogRef<InstanceEditDialogComponent>,
               @Inject(MAT_DIALOG_DATA) public data: InstanceDialogData,
               private apiService: ApiService,
-              private confirmDialog: MatDialog,
-              private newFileDialog: MatDialog,
-              private createPakDialog: MatDialog,
-              private createSaveDialog: MatDialog) {
+              private dialog: MatDialog) {
   }
 
   public get nameControl(): AbstractControl {
@@ -80,7 +77,7 @@ export class InstanceEditDialogComponent implements OnInit {
   public closeConfirm(prompt: string): void {
     if (this.edited) {
       // If the content has been edited, open a confirm dialog before closing
-      const confirmDialogRef = this.confirmDialog.open(ConfirmDialogComponent, {
+      const confirmDialogRef = this.dialog.open(ConfirmDialogComponent, {
         data: prompt,
       });
       confirmDialogRef.afterClosed().subscribe(answer => {
@@ -107,7 +104,7 @@ export class InstanceEditDialogComponent implements OnInit {
     } else {
       return;
     }
-    const newFileDialogRef = this.newFileDialog.open(FileEditDialogComponent, {
+    const newFileDialogRef = this.dialog.open(FileEditDialogComponent, {
       data: {file: newFile, list: fileList}
     });
     newFileDialogRef.afterClosed().subscribe(data => {

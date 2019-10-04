@@ -19,8 +19,7 @@ export class InstancesComponent implements OnInit {
   private sortOptions: Sort = {active: 'name', direction: 'asc'};
 
   constructor(private apiService: ApiService,
-              private editDialog: MatDialog,
-              private confirmDialog: MatDialog) {
+              private dialog: MatDialog) {
   }
 
   private list(): void {
@@ -74,7 +73,7 @@ export class InstancesComponent implements OnInit {
   }
 
   openCreateDialog(): void {
-    const dialogRef = this.editDialog.open(InstanceEditDialogComponent, {
+    const dialogRef = this.dialog.open(InstanceEditDialogComponent, {
       data: {edit: new Instance(), list: this.instances}
     });
     dialogRef.afterClosed().subscribe(data => {
@@ -92,7 +91,7 @@ export class InstancesComponent implements OnInit {
   }
 
   openEditDialog(instance: Instance): void {
-    const dialogRef = this.editDialog.open(InstanceEditDialogComponent, {
+    const dialogRef = this.dialog.open(InstanceEditDialogComponent, {
       data: {edit: instance, list: this.instances}
     });
     dialogRef.afterClosed().subscribe(data => {
@@ -111,7 +110,7 @@ export class InstancesComponent implements OnInit {
   }
 
   deleteConfirmDialog(instance: Instance, promt: string): void {
-    const confirmDialogRef = this.confirmDialog.open(ConfirmDialogComponent, {data: promt});
+    const confirmDialogRef = this.dialog.open(ConfirmDialogComponent, {data: promt});
     confirmDialogRef.afterClosed().subscribe((answer) => {
       if (answer) {
         // Switch to spinner mode while waiting for the server

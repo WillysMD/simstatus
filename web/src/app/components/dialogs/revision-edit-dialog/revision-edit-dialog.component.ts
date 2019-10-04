@@ -33,8 +33,8 @@ export class RevisionEditDialogComponent implements OnInit {
 
   constructor(public dialogRef: MatDialogRef<RevisionEditDialogComponent>,
               @Inject(MAT_DIALOG_DATA) public data: RevisionData,
-              private confirmDialog: MatDialog,
-              private apiService: ApiService) {
+              private apiService: ApiService,
+              private dialog: MatDialog) {
   }
 
   public get rControl(): AbstractControl {
@@ -44,7 +44,7 @@ export class RevisionEditDialogComponent implements OnInit {
   public closeConfirm(prompt: string): void {
     if (this.edited) {
       // If the content has been edited, open a confirm dialog before closing
-      const confirmDialogRef = this.confirmDialog.open(ConfirmDialogComponent, {data: prompt});
+      const confirmDialogRef = this.dialog.open(ConfirmDialogComponent, {data: prompt});
       confirmDialogRef.afterClosed().subscribe(answer => {
         if (answer) {
           this.dialogRef.close();

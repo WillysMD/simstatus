@@ -31,7 +31,7 @@ export class FileEditDialogComponent {
 
   constructor(public dialogRef: MatDialogRef<FileEditDialogComponent>,
               @Inject(MAT_DIALOG_DATA) public data: FileDialogData,
-              private confirmDialog: MatDialog) {
+              private dialog: MatDialog) {
     this.fileForm.valueChanges.subscribe(() => {
       this.edited = true;
       this.dialogRef.disableClose = true;
@@ -55,7 +55,7 @@ export class FileEditDialogComponent {
   public closeConfirm(prompt: string): void {
     if (this.edited) {
       // If the content has been edited, open a confirm dialog before closing
-      const confirmDialogRef = this.confirmDialog.open(ConfirmDialogComponent, {data: prompt});
+      const confirmDialogRef = this.dialog.open(ConfirmDialogComponent, {data: prompt});
       confirmDialogRef.afterClosed().subscribe((answer) => {
         if (answer) {
           this.dialogRef.close();
