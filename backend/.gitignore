@@ -5,3 +5,5 @@
 
 /resources/instances/*
 /resources/uploads/*
+
+.env

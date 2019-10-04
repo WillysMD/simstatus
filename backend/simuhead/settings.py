@@ -11,21 +11,27 @@ https://docs.djangoproject.com/en/2.2/ref/settings/
 """
 
 import os
+import environ
+
+env = environ.Env(
+    DEBUG=(bool, False)
+)
+environ.Env.read_env()
+
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/2.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = '3%q($(40bvd47i5*5rd%buybo_y3xr7_s+s(tu&2n@0=)-1w)_'
+SECRET_KEY = env('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.environ.get('DJANGO_DEBUG', False)
+DEBUG = env('DEBUG')
 
-ALLOWED_HOSTS = ['localhost', 'simstatus.havek.es']
+ALLOWED_HOSTS = env('ALLOWED_HOSTS')
 
 ADMIN_ENABLED = False
 
@@ -77,24 +83,8 @@ WSGI_APPLICATION = 'simuhead.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/2.2/ref/settings/#databases
 
-if DEBUG:
-    DB_USER = 'simstatus-dev'
-    DB_NAME = 'simstatus-dev'
-    DB_PASSWORD = 'Ug13&*&mmh9$siG9#H8K'
-else:
-    DB_USER = 'simstatus-prod'
-    DB_NAME = 'simstatus-prod'
-    DB_PASSWORD = 'H4$3xT7Z0@I!0gQ0#j7t'
-
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': DB_NAME,
-        'USER': DB_USER,
-        'PASSWORD': DB_PASSWORD,
-        'HOST': 'db.havek.es',
-        'PORT': '5432',
-    }
+    'default': env.db()
 }
 
 
@@ -136,8 +126,13 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
+
+# File uploads
+
 MEDIA_ROOT = os.path.join(BASE_DIR, 'resources/uploads/')
-MEDIA_URL = '/uploads/'
+FILE_UPLOAD_PERMISSIONS = 0o777
+
+
+# Extra settings
 
 CORS_ORIGIN_ALLOW_ALL = True
-FILE_UPLOAD_PERMISSIONS = 0o777
