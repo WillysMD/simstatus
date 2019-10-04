@@ -25,7 +25,7 @@ SECRET_KEY = '3%q($(40bvd47i5*5rd%buybo_y3xr7_s+s(tu&2n@0=)-1w)_'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['simstatus.havek.es']
+ALLOWED_HOSTS = ['localhost', 'simstatus.havek.es']
 
 ADMIN_ENABLED = False
 
@@ -140,3 +140,4 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'resources/uploads/')
 MEDIA_URL = '/uploads/'
 
 CORS_ORIGIN_ALLOW_ALL = True
+FILE_UPLOAD_PERMISSIONS = 0o777
