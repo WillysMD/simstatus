@@ -6,4 +6,8 @@
 /resources/instances/*
 /resources/uploads/*
 
-.env
+# static folder only used for django rest framework interface in debug mode
+/static/
+
+simuhead/.env
+*.db
