@@ -1,4 +1,4 @@
-import {Component, EventEmitter, Input, Output} from '@angular/core';
+import {Component, EventEmitter, Input, isDevMode, Output} from '@angular/core';
 
 @Component({
   selector: 'app-navbar',
@@ -12,5 +12,9 @@ export class NavbarComponent {
 
   refresh(): void {
     this.doRefresh.emit();
+  }
+
+  isDev(): boolean {
+    return isDevMode();
   }
 }
