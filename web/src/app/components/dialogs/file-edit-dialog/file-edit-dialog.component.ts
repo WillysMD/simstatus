@@ -18,6 +18,7 @@ export class FileEditDialogComponent {
 
   private edited = false;
   private file: File;
+
   public fileForm = new FormGroup({
     name: new FormControl(this.data.file.name, [
       Validators.required,
@@ -38,23 +39,20 @@ export class FileEditDialogComponent {
     });
   }
 
+  public getFileName(): string {
+    return this.file.name;
+  }
+
   public onFileChange(files: FileList): void {
     this.file = files[0];
   }
 
-  /**
-   * Check if form is valid and a file was added
-   */
   public isValid(): boolean {
     return this.file != null && this.fileForm.valid;
   }
 
-  /**
-   * Check for edits and close the dialog
-   */
   public closeConfirm(prompt: string): void {
     if (this.edited) {
-      // If the content has been edited, open a confirm dialog before closing
       const confirmDialogRef = this.dialog.open(ConfirmDialogComponent, {data: prompt});
       confirmDialogRef.afterClosed().subscribe((answer) => {
         if (answer) {
@@ -62,14 +60,10 @@ export class FileEditDialogComponent {
         }
       });
     } else {
-      // If not edit has been made, just close the dialog
       this.dialogRef.close();
     }
   }
 
-  /**
-   * Add the file and text fields to a FormData object and close
-   */
   public save(): void {
     const fileData = new FormData();
     fileData.append('name', this.fileForm.value.name);

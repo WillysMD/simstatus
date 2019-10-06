@@ -17,7 +17,9 @@
     </div>
 
     <div>
-      <input (change)="onFileChange($event.target.files)" type="file">
+      <button mat-button *ngIf="!this.file" (click)="uploadPak.click()">Upload pak file</button>
+      <button mat-button *ngIf="this.file" (click)="uploadPak.click()">{{getFileName()}}</button>
+      <input #uploadPak (change)="onFileChange($event.target.files)" type="file">
     </div>
   </form>
 </mat-dialog-content>
@@ -26,3 +28,4 @@
   <button (click)="save()" [disabled]="!isValid()" mat-button color="primary">Save</button>
   <button (click)="closeConfirm('Are you sure want to discard your changes?')" mat-button>Cancel</button>
 </mat-dialog-actions>
+
