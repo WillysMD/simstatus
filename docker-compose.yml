@@ -1,4 +1,4 @@
-version: '3'
+version: '3.5'
 
 services:
   django:
@@ -6,16 +6,14 @@ services:
     volumes:
       - uploads:/simstatus/backend/resources/uploads
     networks:
-      - nginx_network
-    extra_hosts:
-      - "db.havek.es:10.0.0.66"
+      - nginx.docker
 
   web:
     build: ./web
     volumes:
       - web:/simstatus/web/dist/simstatus-frontend
     networks:
-      - nginx_network
+      - nginx.docker
 
   nginx:
     restart: always
@@ -30,11 +28,12 @@ services:
       - django
       - web
     networks:
-      - nginx_network
+      - nginx.docker
 
 networks:
-  nginx_network:
-    driver: bridge
+  nginx.docker:
+    name: nginx.docker
+    external: true
 
 volumes:
   uploads:
