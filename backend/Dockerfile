@@ -10,6 +10,6 @@ COPY ./ /simstatus/backend
 WORKDIR /simstatus/backend
 
 RUN pip install pipenv && pipenv install --deploy --ignore-pipfile
-RUN echo "10.0.0.66 db.havek.es" >> /etc/hosts && pipenv run python manage.py migrate
+RUN pipenv run python manage.py migrate
 
 CMD pipenv run gunicorn -b 0.0.0.0:9000 -w 2 simuhead.wsgi:application
