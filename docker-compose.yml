@@ -18,7 +18,7 @@ services:
   nginx:
     restart: always
     image: nginx:stable-alpine
-    name: nginx-simstatus
+    container_name: nginx-simstatus
     ports:
       - 8001:8001
     volumes:
