@@ -19,7 +19,7 @@ services:
     restart: always
     image: nginx:stable-alpine
     ports:
-      - 80:80
+      - 8001:8001
     volumes:
         - ./etc/nginx/conf.d:/etc/nginx/conf.d
         - uploads:/www/uploads
