@@ -17,7 +17,7 @@ interface FileDialogData {
 export class FileEditDialogComponent {
 
   private edited = false;
-  private file: File;
+  file: File;
 
   public fileForm = new FormGroup({
     name: new FormControl(this.data.file.name, [
