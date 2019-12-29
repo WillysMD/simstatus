@@ -18,7 +18,7 @@ services:
     image: nginx:stable-alpine
     container_name: nginx-simstatus
     ports:
-      - 8000:8000
+      - 8001:8001
     volumes:
         - ./etc/nginx/conf.d:/etc/nginx/conf.d
         - uploads:/www/uploads
