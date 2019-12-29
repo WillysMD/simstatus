@@ -12,15 +12,13 @@ services:
     build: ./web
     volumes:
       - web:/simstatus/web/dist/simstatus-frontend
-    networks:
-      - nginx.docker
 
   nginx:
     restart: always
     image: nginx:stable-alpine
     container_name: nginx-simstatus
     ports:
-      - 8001:8001
+      - 8000:8000
     volumes:
         - ./etc/nginx/conf.d:/etc/nginx/conf.d
         - uploads:/www/uploads
