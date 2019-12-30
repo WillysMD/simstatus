@@ -58,15 +58,15 @@ export class ApiService {
   }
 
   instanceInstall(instance: Instance) {
-    return this.httpClient.get<Instance>(`${this.baseUri}/instances/install/`, httpDefaultOptions);
+    return this.httpClient.get<Instance>(`${instance.url}install/`, httpDefaultOptions);
   }
 
   instanceStart(instance: Instance) {
-    return this.httpClient.get<Instance>(`${this.baseUri}/instances/start/`, httpDefaultOptions);
+    return this.httpClient.get<Instance>(`${instance.url}start/`, httpDefaultOptions);
   }
 
   instanceStop(instance: Instance) {
-    return this.httpClient.get<Instance>(`${this.baseUri}/instances/stop/`, httpDefaultOptions);
+    return this.httpClient.get<Instance>(`${instance.url}stop/`, httpDefaultOptions);
   }
 
   /*
@@ -86,7 +86,7 @@ export class ApiService {
   }
 
   revisionBuild(url: string) {
-    return this.httpClient.get<Revision>(`{url}/build/`, httpDefaultOptions);
+    return this.httpClient.get<Revision>(`${url}build/`, httpDefaultOptions);
   }
 
   /*
