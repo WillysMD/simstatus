@@ -3,7 +3,14 @@ from rest_framework.routers import DefaultRouter
 from .views import PakViewSet, SaveViewSet, RevisionViewSet, SimuconfViewSet, InstanceViewSet, InfoLoadAvgView, \
     InfoRevisionLatestView
 
-router = DefaultRouter()
+
+class OptionalSlashRouter(DefaultRouter):
+    def __init__(self, *args, **kwargs):
+        self.trailing_slash = '/?'
+        super(OptionalSlashRouter, self).__init__(*args, **kwargs)
+
+
+router = OptionalSlashRouter()
 
 router.register('paks', PakViewSet, basename='pak')
 router.register('saves', SaveViewSet, basename='save')
