@@ -12,4 +12,4 @@ WORKDIR /simstatus/backend
 RUN pip install pipenv && pipenv install --deploy --ignore-pipfile
 RUN pipenv run python manage.py migrate
 
-CMD pipenv run gunicorn -b 0.0.0.0:9000 -w 2 simuhead.wsgi:application
+CMD pipenv run gunicorn -b 0.0.0.0:9000 -w 2 -t 300 simuhead.wsgi:application
