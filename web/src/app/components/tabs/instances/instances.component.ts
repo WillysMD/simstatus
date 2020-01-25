@@ -102,7 +102,7 @@ export class InstancesComponent implements OnInit {
         const editedInstance = new Instance(data);
         this.replace(instance, editedInstance);
 
-        this.apiService.put(data).subscribe({
+        this.apiService.patch(data).subscribe({
           next: response => this.replace(editedInstance, response)
         });
       }
