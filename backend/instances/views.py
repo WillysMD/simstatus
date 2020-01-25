@@ -67,7 +67,7 @@ class InstanceViewSet(viewsets.ModelViewSet):
             instance.pid = pid
             instance.save()
 
-        return self.detail(self, request, *args, **kwargs)
+        return self.detail(request, *args, **kwargs)
 
     @action(detail=True, methods=['get'])
     def stop(self, request, *args, **kwargs):

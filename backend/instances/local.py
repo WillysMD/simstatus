@@ -191,10 +191,15 @@ class LocalInstance:
             return True
 
     def is_running(self):
-        if self.pid is None:
+        pid = self.pid
+        if pid is None:
             return False
         else:
-            return True
+            process = psutil.Process(self.pid)
+            if process.status() == psutil.STATUS_ZOMBIE:
+                return False
+            else:
+                return True
 
     def rename(self, new_name):
         """Renames the instance directory to new name and changes all associated virables"""
