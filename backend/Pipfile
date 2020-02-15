@@ -12,6 +12,7 @@ gunicorn = "*"
 setproctitle = "*"
 psycopg2 = "*"
 django-environ = "*"
+docker = "*"
 
 [requires]
 python_version = "3.8"
